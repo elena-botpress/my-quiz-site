@@ -2,11 +2,12 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Культкод</title>
     <!-- Подгрузка шрифта -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         /* Основные настройки */
         * {
@@ -23,12 +24,13 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
+            padding: 2rem 1rem;
         }
         .container {
-            max-width: 95vw;
+            max-width: 1200px;
             width: 100%;
             display: grid;
-            gap: 2rem;
+            gap: 3rem;
             place-items: center;
             text-align: center;
         }
@@ -36,64 +38,77 @@
         @media screen and (min-width: 768px) { /* Для планшетов и ПК */
             .container {
                 grid-template-columns: repeat(3, 1fr);
+                align-items: start;
             }
         }
 
         /* Элементы дизайна */
         h1 {
-            font-size: clamp(2rem, 10vw, 4rem); /* Адаптивный размер заголовка */
+            grid-column: 1 / -1; /* Заголовок на всю ширину */
+            font-size: clamp(2.5rem, 10vw, 5rem); /* Адаптивный размер заголовка */
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            line-height: 1.1;
+            background: linear-gradient(to right, #ff69b4, #00ff7f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1rem;
+        }
+
+        .category {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #888;
+            text-transform: uppercase;
             letter-spacing: 0.1em;
-            line-height: 1.2;
-            mix-blend-mode: difference; /* Неоновый эффект */
-            position: relative;
-            z-index: 1;
-        }
-        h1::before,
-        h1::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            background-image: linear-gradient(to right, #ff69b4, #00ff7f);
-            opacity: 0.2;
-            pointer-events: none;
-            z-index: -1;
-        }
-        h1::after {
-            filter: blur(10px);
+            margin-bottom: 0.5rem;
         }
 
         a.button {
             display: block;
-            padding: 1.5rem 2rem;
-            font-size: clamp(1.2rem, 5vw, 1.8rem);
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            border-radius: 10px;
-            transition: transform 0.2s ease-in-out;
+            padding: 1.2rem 1.5rem;
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            font-weight: 700;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease-in-out;
             text-decoration: none;
-            color: inherit;
-            target="_blank"; /* Открывать в новой вкладке */
-        }
-        a.button:hover {
-            transform: scale(1.05);
+            color: white; /* ИСПРАВЛЕНО: теперь текст белый и видимый */
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Градиентный фон для кнопок */
-        .category {
-            --gradient-start: #ff69b4;
-            --gradient-end: #00ff7f;
-            background-image: linear-gradient(
-                to right,
-                var(--gradient-start),
-                var(--gradient-end)
-            );
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            mix-blend-mode: overlay;
+        /* Градиентный эффект при наведении */
+        a.button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, #ff69b4, #00ff7f);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        a.button:hover {
+            transform: translateY(-3px) scale(1.02);
+            border-color: transparent;
+            color: #0a0a0a; /* Текст становится темным на ярком фоне */
+        }
+
+        a.button:hover::before {
+            opacity: 1;
         }
     </style>
 </head>
@@ -104,42 +119,43 @@
     
     <!-- Блок Угадываем по звуку/кадру -->
     <div class="category">
-        <a class="button" href="https://movieguessr.net/quizzes/9b9abde0-404d-40fd-8fde-6cbab759f4db">ЭМОДЗИ</a>
-        <a class="button" href="https://movieguessr.net/quizzes/4d3386a0-c5db-4750-8073-c91086817931">РУКА ПЕРСОНАЖА</a>
-        <a class="button" href="https://moviehunter.ru/">ФРАГМЕНТ ИЗ ФИЛЬМА</a>
-        <a class="button" href="https://ugadai-film.ru">МУЛЬТФИЛЬМ</a>
+        <div class="category-title">Угадай по кадру</div>
+        <a class="button" href="https://movieguessr.net/quizzes/9b9abde0-404d-40fd-8fde-6cbab759f4db" target="_blank">ЭМОДЗИ</a>
+        <a class="button" href="https://movieguessr.net/quizzes/4d3386a0-c5db-4750-8073-c91086817931" target="_blank">РУКА ПЕРСОНАЖА</a>
+        <a class="button" href="https://moviehunter.ru/" target="_blank">ФРАГМЕНТ ИЗ ФИЛЬМА</a>
+        <a class="button" href="https://ugadai-film.ru" target="_blank">МУЛЬТФИЛЬМ</a>
     </div>
 
     <!-- Блок Назад в СССР -->
     <div class="category">
-        <a class="button" href="https://vk.ru/app54716918">БЫТ В СССР</a>
-        <a class="button" href="https://vk.ru/app51539265">СТРАННЫЕ ПРЕДМЕТЫ ИЗ СССР</a>
-        <a class="button" href="https://ugadai-film.ru">КИНО В СССР</a>
+        <div class="category-title">Назад в СССР</div>
+        <a class="button" href="https://vk.ru/app54716918" target="_blank">БЫТ В СССР</a>
+        <a class="button" href="https://vk.ru/app51539265" target="_blank">СТРАННЫЕ ПРЕДМЕТЫ</a>
+        <a class="button" href="https://ugadai-film.ru" target="_blank">КИНО В СССР</a>
     </div>
 
     <!-- Блок Сюрприз -->
     <div class="category">
-        <a class="button" href="https://kinoguesser.ru">КОТ В МЕШКЕ</a>
-        <a class="button" href="https://vk.ru/triviaroadsign">БЕРЕГИСЬ АВТОМОБИЛЯ</a>
+        <div class="category-title">Сюрприз</div>
+        <a class="button" href="https://kinoguesser.ru" target="_blank">КОТ В МЕШКЕ</a>
+        <a class="button" href="https://vk.ru/triviaroadsign" target="_blank">БЕРЕГИСЬ АВТОМОБИЛЯ</a>
     </div>
 
-    <!-- Блок Викторины -->
-    <div class="category">
-        <a class="button" href="https://yandex.ru/games/app/203046">УЭНЗДЕЙ</a>
-        <a class="button" href="https://pikuco.ru/tests/49520">УЭНЗДЕЙ 2</a>
-        <a class="button" href="https://blitzquiz.ru/kviz/slovo-pacana-viktorina-dlya-fanatov">СЛОВО ПАЦАНА</a>
-        <a class="button" href="https://blitzquiz.ru/kviz/forsazh-viktorina-dlya-fanatov-franshizy">ФОРСАЖ</a>
-        <a class="button" href="https://app.unislide.io/my/presentations/zIwi6O2UkvO2y1OVpfRY/edit">ЮНИСЛАЙД</a>
-        <a class="button" href="https://yandex.ru/games/app/437854">ГАРРИ ПОТТЕР</a>
-        <a class="button" href="https://yandex.ru/games/app/sumerki-test-225270">СУМЕРКИ</a>
-        <a class="button" href="https://pikuco.ru/tests/113532">DC</a>
-        <a class="button" href="https://pikuco.ru/tests/24216">ВИКТОРИНА</a>
-        <a class="button" href="https://pikuco.ru/tests/14670">МСТИТЕЛИ</a>
-        <a class="button" href="https://www.maximonline.ru/entertainment/horror-movies-test-id163310">УЖАСЫ</a>
-        <a class="button" href="https://www.pravilamag.ru/entertainment/685195-umeret-ne-vstat-naskolko-horosho-vy-razbiraetes-v-filmah-uzhasov-test">СЛОЖНЫЕ УЖАСЫ</a>
-        <a class="button" href="https://pikuco.ru/tests/1483">СМЕШАРИКИ</a>
-        <a class="button" href="https://app.unislide.io/my/presentations/WoRbOxfq8XfwtMbINbWO/edit">НА ЮНИСЛАЙДЕ</a>
-        <a class="button" href="https://snob.ru/culture/vse-vokrug-takoe-krugloe-kak-horosho-vy-znaete-mir-smesharikov-test/?utm_source=tg&utm_medium=social&utm_content=article">ВИКТОРИНА</a>
+    <!-- Блок Викторины (разбил на две колонки на больших экранах для красоты) -->
+    <div class="category" style="grid-column: span 2;">
+        <div class="category-title">Популярные викторины</div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <a class="button" href="https://yandex.ru/games/app/203046" target="_blank">УЭНЗДЕЙ</a>
+            <a class="button" href="https://pikuco.ru/tests/49520" target="_blank">УЭНЗДЕЙ 2</a>
+            <a class="button" href="https://blitzquiz.ru/kviz/slovo-pacana-viktorina-dlya-fanatov" target="_blank">СЛОВО ПАЦАНА</a>
+            <a class="button" href="https://blitzquiz.ru/kviz/forsazh-viktorina-dlya-fanatov-franshizy" target="_blank">ФОРСАЖ</a>
+            <a class="button" href="https://yandex.ru/games/app/437854" target="_blank">ГАРРИ ПОТТЕР</a>
+            <a class="button" href="https://yandex.ru/games/app/sumerki-test-225270" target="_blank">СУМЕРКИ</a>
+            <a class="button" href="https://pikuco.ru/tests/113532" target="_blank">DC</a>
+            <a class="button" href="https://pikuco.ru/tests/14670" target="_blank">МСТИТЕЛИ</a>
+            <a class="button" href="https://www.maximonline.ru/entertainment/horror-movies-test-id163310" target="_blank">УЖАСЫ</a>
+            <a class="button" href="https://pikuco.ru/tests/1483" target="_blank">СМЕШАРИКИ</a>
+        </div>
     </div>
 </div>
 </body>
