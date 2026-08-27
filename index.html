@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Культкод</title>
+    <!-- Подгрузка шрифта -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
+    <style>
+        /* Основные настройки */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0a0a0a; /* Глубокий черный фон */
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 95vw;
+            width: 100%;
+            display: grid;
+            gap: 2rem;
+            place-items: center;
+            text-align: center;
+        }
+
+        @media screen and (min-width: 768px) { /* Для планшетов и ПК */
+            .container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Элементы дизайна */
+        h1 {
+            font-size: clamp(2rem, 10vw, 4rem); /* Адаптивный размер заголовка */
+            letter-spacing: 0.1em;
+            line-height: 1.2;
+            mix-blend-mode: difference; /* Неоновый эффект */
+            position: relative;
+            z-index: 1;
+        }
+        h1::before,
+        h1::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background-image: linear-gradient(to right, #ff69b4, #00ff7f);
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: -1;
+        }
+        h1::after {
+            filter: blur(10px);
+        }
+
+        a.button {
+            display: block;
+            padding: 1.5rem 2rem;
+            font-size: clamp(1.2rem, 5vw, 1.8rem);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            border-radius: 10px;
+            transition: transform 0.2s ease-in-out;
+            text-decoration: none;
+            color: inherit;
+            target="_blank"; /* Открывать в новой вкладке */
+        }
+        a.button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Градиентный фон для кнопок */
+        .category {
+            --gradient-start: #ff69b4;
+            --gradient-end: #00ff7f;
+            background-image: linear-gradient(
+                to right,
+                var(--gradient-start),
+                var(--gradient-end)
+            );
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            mix-blend-mode: overlay;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Заголовок -->
+    <h1>КУЛЬТКОД</h1>
+    
+    <!-- Блок Угадываем по звуку/кадру -->
+    <div class="category">
+        <a class="button" href="https://movieguessr.net/quizzes/9b9abde0-404d-40fd-8fde-6cbab759f4db">ЭМОДЗИ</a>
+        <a class="button" href="https://movieguessr.net/quizzes/4d3386a0-c5db-4750-8073-c91086817931">РУКА ПЕРСОНАЖА</a>
+        <a class="button" href="https://moviehunter.ru/">ФРАГМЕНТ ИЗ ФИЛЬМА</a>
+        <a class="button" href="https://ugadai-film.ru">МУЛЬТФИЛЬМ</a>
+    </div>
+
+    <!-- Блок Назад в СССР -->
+    <div class="category">
+        <a class="button" href="https://vk.ru/app54716918">БЫТ В СССР</a>
+        <a class="button" href="https://vk.ru/app51539265">СТРАННЫЕ ПРЕДМЕТЫ ИЗ СССР</a>
+        <a class="button" href="https://ugadai-film.ru">КИНО В СССР</a>
+    </div>
+
+    <!-- Блок Сюрприз -->
+    <div class="category">
+        <a class="button" href="https://kinoguesser.ru">КОТ В МЕШКЕ</a>
+        <a class="button" href="https://vk.ru/triviaroadsign">БЕРЕГИСЬ АВТОМОБИЛЯ</a>
+    </div>
+
+    <!-- Блок Викторины -->
+    <div class="category">
+        <a class="button" href="https://yandex.ru/games/app/203046">УЭНЗДЕЙ</a>
+        <a class="button" href="https://pikuco.ru/tests/49520">УЭНЗДЕЙ 2</a>
+        <a class="button" href="https://blitzquiz.ru/kviz/slovo-pacana-viktorina-dlya-fanatov">СЛОВО ПАЦАНА</a>
+        <a class="button" href="https://blitzquiz.ru/kviz/forsazh-viktorina-dlya-fanatov-franshizy">ФОРСАЖ</a>
+        <a class="button" href="https://app.unislide.io/my/presentations/zIwi6O2UkvO2y1OVpfRY/edit">ЮНИСЛАЙД</a>
+        <a class="button" href="https://yandex.ru/games/app/437854">ГАРРИ ПОТТЕР</a>
+        <a class="button" href="https://yandex.ru/games/app/sumerki-test-225270">СУМЕРКИ</a>
+        <a class="button" href="https://pikuco.ru/tests/113532">DC</a>
+        <a class="button" href="https://pikuco.ru/tests/24216">ВИКТОРИНА</a>
+        <a class="button" href="https://pikuco.ru/tests/14670">МСТИТЕЛИ</a>
+        <a class="button" href="https://www.maximonline.ru/entertainment/horror-movies-test-id163310">УЖАСЫ</a>
+        <a class="button" href="https://www.pravilamag.ru/entertainment/685195-umeret-ne-vstat-naskolko-horosho-vy-razbiraetes-v-filmah-uzhasov-test">СЛОЖНЫЕ УЖАСЫ</a>
+        <a class="button" href="https://pikuco.ru/tests/1483">СМЕШАРИКИ</a>
+        <a class="button" href="https://app.unislide.io/my/presentations/WoRbOxfq8XfwtMbINbWO/edit">НА ЮНИСЛАЙДЕ</a>
+        <a class="button" href="https://snob.ru/culture/vse-vokrug-takoe-krugloe-kak-horosho-vy-znaete-mir-smesharikov-test/?utm_source=tg&utm_medium=social&utm_content=article">ВИКТОРИНА</a>
+    </div>
+</div>
+</body>
+</html>
