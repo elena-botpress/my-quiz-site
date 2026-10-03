@@ -3,51 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Квиз: Сидим с бобром</title>
+    <title>🦫 Квиз: Сидим с бобром</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #fff8f0 0%, #ffe8d6 100%);
+            background: linear-gradient(135deg, #B5C4A8 0%, #E8D98C 50%, #7A9E6B 100%);
             min-height: 100vh;
             overflow-x: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '🍃🌿🍃🌲';
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            font-size: 3rem;
+            opacity: 0.1;
+            letter-spacing: 50px;
+            pointer-events: none;
+            z-index: 0;
+            animation: leafFloat 30s linear infinite;
+        }
+        @keyframes leafFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
         }
         .screen-guess {
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            min-height: 100vh; padding: 40px 20px; text-align: center;
+            min-height: 100vh; padding: 40px 20px;
+            text-align: center; position: relative; z-index: 1;
         }
         .guess-title {
             font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 900; color: #5c3a21;
-            margin-bottom: 30px; text-transform: uppercase; letter-spacing: 3px;
+            font-weight: 900; color: #2D4A2D;
+            margin-bottom: 30px; text-transform: uppercase;
+            letter-spacing: 3px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         .guess-cover {
             max-width: 700px; width: 100%;
             border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(92, 58, 33, 0.3);
-            margin-bottom: 30px; background: white; padding: 20px;
+            box-shadow: 0 20px 60px rgba(45, 74, 45, 0.3);
+            margin-bottom: 30px; background: white;
+            padding: 20px; border: 4px solid #8B5A2B;
         }
         .emoji-puzzle {
             font-size: clamp(2rem, 5vw, 3.5rem);
             margin-bottom: 20px; letter-spacing: 10px;
         }
         .puzzle-hint {
-            font-size: 1.2rem; color: #8b6f47;
+            font-size: 1.2rem; color: #5C7A7A;
             margin-bottom: 30px; font-style: italic; max-width: 600px;
         }
         .btn-hint {
-            background: linear-gradient(135deg, #d4a574, #b8860b);
-            color: white; border: none;
+            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
+            color: white; border: 3px solid #8B5A2B;
             padding: 20px 50px; font-size: 1.5rem; font-weight: 700;
             border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
+            box-shadow: 0 10px 30px rgba(45, 74, 45, 0.4);
             transition: all 0.3s; font-family: 'Nunito', sans-serif;
         }
         .btn-hint:hover {
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(184, 134, 11, 0.6);
+            box-shadow: 0 15px 40px rgba(45, 74, 45, 0.6);
+            background: linear-gradient(135deg, #5C7A7A, #2D4A2D);
         }
         .guess-options {
             display: none; flex-direction: column;
@@ -55,25 +76,26 @@
         }
         .guess-options.visible { display: flex; }
         .guess-option {
-            background: white; border: 3px solid #d4a574;
+            background: white; border: 3px solid #7A9E6B;
             padding: 20px; border-radius: 20px;
-            font-size: 1.2rem; font-weight: 700; color: #5c3a21;
+            font-size: 1.2rem; font-weight: 700; color: #2D4A2D;
             cursor: pointer; transition: all 0.3s;
             font-family: 'Nunito', sans-serif;
         }
         .guess-option:hover {
-            background: #d4a574; color: white; transform: scale(1.02);
+            background: #7A9E6B; color: white;
+            transform: scale(1.02); border-color: #2D4A2D;
         }
         .guess-option.correct {
-            background: #90ee90; border-color: #228b22; color: #228b22;
+            background: #7A9E6B; border-color: #2D4A2D; color: white;
         }
         .guess-option.wrong {
-            background: #ffb6c1; border-color: #dc143c; color: #dc143c;
+            background: #B5C4A8; border-color: #8B5A2B; color: #8B5A2B;
         }
         .guess-option:disabled { cursor: not-allowed; }
         .success-message {
             display: none; font-size: 2.5rem; font-weight: 900;
-            color: #228b22; margin-top: 30px;
+            color: #2D4A2D; margin-top: 30px;
             animation: bounceIn 0.6s ease-out;
         }
         .success-message.visible { display: block; }
@@ -84,15 +106,17 @@
             100% { opacity: 1; transform: scale(1); }
         }
         .screen-quiz {
-            display: none; min-height: 100vh; padding: 40px 20px;
+            display: none; min-height: 100vh;
+            padding: 40px 20px; position: relative; z-index: 1;
         }
         .quiz-header { text-align: center; margin-bottom: 40px; }
         .quiz-title {
             font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 900; color: #5c3a21; margin-bottom: 10px;
+            font-weight: 900; color: #2D4A2D;
+            margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         .quiz-progress {
-            font-size: 1.2rem; color: #8b6f47; font-weight: 700;
+            font-size: 1.2rem; color: #5C7A7A; font-weight: 700;
         }
         .quiz-container {
             display: flex; gap: 30px;
@@ -101,53 +125,56 @@
         .quiz-left {
             flex: 0 0 40%; background: white;
             border-radius: 30px; padding: 30px;
-            box-shadow: 0 20px 60px rgba(92, 58, 33, 0.2);
+            box-shadow: 0 20px 60px rgba(45, 74, 45, 0.2);
             display: flex; flex-direction: column;
+            border: 3px solid #7A9E6B;
         }
         .quiz-question {
             font-size: clamp(1.1rem, 2vw, 1.5rem);
-            font-weight: 900; color: #5c3a21;
+            font-weight: 900; color: #2D4A2D;
             margin-bottom: 20px; line-height: 1.4;
         }
         .quiz-options { display: flex; flex-direction: column; gap: 12px; }
         .quiz-option {
-            background: linear-gradient(135deg, #fff8f0, #ffe8d6);
-            border: 3px solid #d4a574;
+            background: linear-gradient(135deg, #B5C4A8, #E8D98C);
+            border: 3px solid #7A9E6B;
             padding: 15px 20px; border-radius: 20px;
-            font-size: 1rem; font-weight: 700; color: #5c3a21;
+            font-size: 1rem; font-weight: 700; color: #2D4A2D;
             cursor: pointer; transition: all 0.3s;
             text-align: left; font-family: 'Nunito', sans-serif;
         }
         .quiz-option:hover {
-            background: linear-gradient(135deg, #d4a574, #b8860b);
+            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
             color: white; transform: translateX(10px);
+            border-color: #2D4A2D;
         }
         .quiz-option.correct {
-            background: linear-gradient(135deg, #90ee90, #228b22);
-            border-color: #228b22; color: white;
+            background: linear-gradient(135deg, #7A9E6B, #2D4A2D);
+            border-color: #2D4A2D; color: white;
         }
         .quiz-option.wrong {
-            background: linear-gradient(135deg, #ffb6c1, #dc143c);
-            border-color: #dc143c; color: white;
+            background: linear-gradient(135deg, #E8D98C, #8B5A2B);
+            border-color: #8B5A2B; color: white;
         }
         .quiz-option:disabled { cursor: not-allowed; opacity: 0.7; }
         .quiz-right {
             flex: 1; background: white;
             border-radius: 30px; padding: 30px;
-            box-shadow: 0 20px 60px rgba(92, 58, 33, 0.2);
+            box-shadow: 0 20px 60px rgba(45, 74, 45, 0.2);
             min-height: 500px;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            position: relative;
+            position: relative; border: 3px solid #7A9E6B;
         }
         .answer-placeholder {
-            text-align: center; color: #8b6f47; font-size: 1.2rem;
+            text-align: center; color: #5C7A7A; font-size: 1.2rem;
         }
         .answer-image {
             max-width: 100%; max-height: 600px;
             border-radius: 20px;
             animation: fadeIn 0.5s ease-out;
             object-fit: contain;
+            border: 4px solid #8B5A2B;
         }
         .emoji-reaction {
             font-size: 8rem; animation: bounceIn 0.6s ease-out;
@@ -158,45 +185,56 @@
         }
         .btn-next {
             display: none; margin-top: 20px;
-            background: linear-gradient(135deg, #d4a574, #b8860b);
-            color: white; border: none;
+            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
+            color: white; border: 3px solid #8B5A2B;
             padding: 15px 40px; font-size: 1.2rem; font-weight: 700;
             border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
+            box-shadow: 0 10px 30px rgba(45, 74, 45, 0.4);
             transition: all 0.3s; font-family: 'Nunito', sans-serif;
             align-self: flex-start;
         }
-        .btn-next:hover { transform: translateY(-3px) scale(1.05); }
+        .btn-next:hover {
+            transform: translateY(-3px) scale(1.05);
+            background: linear-gradient(135deg, #5C7A7A, #2D4A2D);
+        }
         .btn-next.visible { display: block; }
         .screen-result {
             display: none; flex-direction: column;
             align-items: center; justify-content: center;
-            min-height: 100vh; padding: 40px 20px; text-align: center;
+            min-height: 100vh; padding: 40px 20px;
+            text-align: center; position: relative; z-index: 1;
         }
         .result-title {
             font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 900; color: #5c3a21; margin-bottom: 20px;
+            font-weight: 900; color: #2D4A2D;
+            margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         .result-score {
             font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900; color: #d4a574; margin-bottom: 20px;
+            font-weight: 900; color: #7A9E6B;
+            margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         .result-message {
-            font-size: 1.5rem; color: #8b6f47;
+            font-size: 1.5rem; color: #5C7A7A;
             margin-bottom: 40px; max-width: 600px;
         }
         .btn-restart {
-            background: linear-gradient(135deg, #d4a574, #b8860b);
-            color: white; border: none;
+            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
+            color: white; border: 3px solid #8B5A2B;
             padding: 20px 50px; font-size: 1.5rem; font-weight: 700;
             border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
+            box-shadow: 0 10px 30px rgba(45, 74, 45, 0.4);
             transition: all 0.3s; font-family: 'Nunito', sans-serif;
         }
-        .btn-restart:hover { transform: translateY(-5px) scale(1.05); }
+        .btn-restart:hover {
+            transform: translateY(-5px) scale(1.05);
+            background: linear-gradient(135deg, #5C7A7A, #2D4A2D);
+        }
         .image-error {
-            color: #dc143c; font-size: 1.2rem; font-weight: 700;
+            color: #8B5A2B; font-size: 1.2rem; font-weight: 700;
             padding: 20px; text-align: center;
+            background: #E8D98C; border-radius: 15px;
+            border: 2px solid #8B5A2B;
         }
         @media (max-width: 968px) {
             .quiz-container { flex-direction: column; }
@@ -209,8 +247,8 @@
 <body>
 
     <div class="screen-guess" id="screenGuess">
-        <h1 class="guess-title"> Угадай песню! 🎵</h1>
-        <img src="обложка.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.style.display='none'">
+        <h1 class="guess-title">🌲 Угадай песню! 🎵</h1>
+        <img src="cover.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.outerHTML='<div style=font-size:4rem;margin-bottom:20px;>🦫🌲</div>'">
         <div class="emoji-puzzle">🪑 + 🦫 + 🪵 + 🥃 + 🎤 + 😌 = ❓</div>
         <p class="puzzle-hint">Это не инструкция по выживанию в тайге и не рецепт коктейля... Нажмите на подсказку!</p>
         <button class="btn-hint" id="btnHint" onclick="showOptions()">💡 Подсказка</button>
@@ -225,7 +263,7 @@
 
     <div class="screen-quiz" id="screenQuiz">
         <div class="quiz-header">
-            <h1 class="quiz-title"> Квиз: Сидим с бобром 🦫</h1>
+            <h1 class="quiz-title">🦫 Квиз: Сидим с бобром 🌲</h1>
             <div class="quiz-progress">Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">15</span></div>
         </div>
         <div class="quiz-container">
@@ -236,7 +274,7 @@
             </div>
             <div class="quiz-right" id="answerArea">
                 <div class="answer-placeholder">
-                    <div style="font-size: 4rem; margin-bottom: 20px;">🎯</div>
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🌲</div>
                     <div>Здесь появится ответ!</div>
                 </div>
             </div>
@@ -244,7 +282,7 @@
     </div>
 
     <div class="screen-result" id="screenResult">
-        <h1 class="result-title"> Квиз завершён! 🎉</h1>
+        <h1 class="result-title">🌲 Квиз завершён! 🎉</h1>
         <div class="result-score"><span id="scoreCorrect">0</span> / <span id="scoreTotal">15</span></div>
         <div class="result-message" id="resultMessage"></div>
         <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
@@ -280,7 +318,7 @@
 
         let currentQuestionIndex = 0;
         let correctAnswers = 0;
-        const emojiReactions = ['', '😞', '😂', '', '😭', '🤕'];
+        const emojiReactions = ['😡', '😞', '😂', '😢', '😭', '🤕'];
 
         function showOptions() {
             document.getElementById('guessOptions').classList.add('visible');
@@ -325,7 +363,7 @@
             });
             document.getElementById('answerArea').innerHTML = `
                 <div class="answer-placeholder">
-                    <div style="font-size: 4rem; margin-bottom: 20px;">🎯</div>
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🌲</div>
                     <div>Здесь появится ответ!</div>
                 </div>
             `;
@@ -339,25 +377,20 @@
                 button.classList.add('correct');
                 correctAnswers++;
                 document.getElementById('answerArea').innerHTML = `
-                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>🖼️ Картинка не загрузилась<br><small>Проверьте имя файла: ${q.image}</small></div>'">
+                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>🖼️ Картинка не загрузилась<br><small>Проверьте файл: ${q.image}</small></div>'">
                 `;
                 if (q.audio) {
                     const audio = document.getElementById(q.audio);
                     if (audio) {
                         audio.currentTime = 0;
-                        audio.play().catch(e => {
-                            console.log('Аудио не удалось воспроизвести:', e);
-                            alert(' Нажмите на кнопку ещё раз, чтобы включить звук');
-                        });
+                        audio.play().catch(e => console.log('Аудио:', e));
                     }
                 }
             } else {
                 button.classList.add('wrong');
                 allButtons[q.correct].classList.add('correct');
                 const randomEmoji = emojiReactions[Math.floor(Math.random() * emojiReactions.length)];
-                document.getElementById('answerArea').innerHTML = `
-                    <div class="emoji-reaction">${randomEmoji}</div>
-                `;
+                document.getElementById('answerArea').innerHTML = `<div class="emoji-reaction">${randomEmoji}</div>`;
             }
             document.getElementById('btnNext').classList.add('visible');
         }
@@ -378,7 +411,7 @@
             document.getElementById('scoreTotal').textContent = questions.length;
             let message = '';
             const percentage = (correctAnswers / questions.length) * 100;
-            if (percentage === 100) message = ' Идеально! Ты настоящий бобровед! Бобёр бы тобой гордился! 🦫✨';
+            if (percentage === 100) message = '🌲 Идеально! Ты настоящий бобровед! Бобёр бы тобой гордился! 🦫✨';
             else if (percentage >= 80) message = '🌟 Отлично! Ты почти так же офигенно, как бобёр!';
             else if (percentage >= 60) message = '👍 Неплохо! Но бобёр ожидает от тебя большего!';
             else if (percentage >= 40) message = '😅 Ну такое... Пора переслушать песню раз 100! 🎵';
