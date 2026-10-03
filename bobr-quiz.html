@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦫 Квиз: Сидим с бобром</title>
+    <title> Квиз: Сидим с бобром</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -14,103 +14,66 @@
             overflow-x: hidden;
         }
         .screen-guess {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-            text-align: center;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 100vh; padding: 40px 20px; text-align: center;
         }
         .guess-title {
             font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 900;
-            color: #5c3a21;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
+            font-weight: 900; color: #5c3a21;
+            margin-bottom: 30px; text-transform: uppercase; letter-spacing: 3px;
         }
         .guess-cover {
-            max-width: 700px;
-            width: 100%;
+            max-width: 700px; width: 100%;
             border-radius: 30px;
             box-shadow: 0 20px 60px rgba(92, 58, 33, 0.3);
-            margin-bottom: 30px;
-            background: white;
-            padding: 20px;
+            margin-bottom: 30px; background: white; padding: 20px;
         }
         .emoji-puzzle {
             font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 20px;
-            letter-spacing: 10px;
+            margin-bottom: 20px; letter-spacing: 10px;
         }
         .puzzle-hint {
-            font-size: 1.2rem;
-            color: #8b6f47;
-            margin-bottom: 30px;
-            font-style: italic;
-            max-width: 600px;
+            font-size: 1.2rem; color: #8b6f47;
+            margin-bottom: 30px; font-style: italic; max-width: 600px;
         }
         .btn-hint {
             background: linear-gradient(135deg, #d4a574, #b8860b);
-            color: white;
-            border: none;
-            padding: 20px 50px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
+            color: white; border: none;
+            padding: 20px 50px; font-size: 1.5rem; font-weight: 700;
+            border-radius: 50px; cursor: pointer;
             box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
-            transition: all 0.3s;
-            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s; font-family: 'Nunito', sans-serif;
         }
         .btn-hint:hover {
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 15px 40px rgba(184, 134, 11, 0.6);
         }
         .guess-options {
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 600px;
-            width: 100%;
-            margin-top: 30px;
+            display: none; flex-direction: column;
+            gap: 15px; max-width: 600px; width: 100%; margin-top: 30px;
         }
         .guess-options.visible { display: flex; }
         .guess-option {
-            background: white;
-            border: 3px solid #d4a574;
-            padding: 20px;
-            border-radius: 20px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #5c3a21;
-            cursor: pointer;
-            transition: all 0.3s;
+            background: white; border: 3px solid #d4a574;
+            padding: 20px; border-radius: 20px;
+            font-size: 1.2rem; font-weight: 700; color: #5c3a21;
+            cursor: pointer; transition: all 0.3s;
             font-family: 'Nunito', sans-serif;
         }
         .guess-option:hover {
-            background: #d4a574;
-            color: white;
-            transform: scale(1.02);
+            background: #d4a574; color: white; transform: scale(1.02);
         }
         .guess-option.correct {
-            background: #90ee90;
-            border-color: #228b22;
-            color: #228b22;
+            background: #90ee90; border-color: #228b22; color: #228b22;
         }
         .guess-option.wrong {
-            background: #ffb6c1;
-            border-color: #dc143c;
-            color: #dc143c;
+            background: #ffb6c1; border-color: #dc143c; color: #dc143c;
         }
         .guess-option:disabled { cursor: not-allowed; }
         .success-message {
-            display: none;
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: #228b22;
-            margin-top: 30px;
+            display: none; font-size: 2.5rem; font-weight: 900;
+            color: #228b22; margin-top: 30px;
             animation: bounceIn 0.6s ease-out;
         }
         .success-message.visible { display: block; }
@@ -121,163 +84,123 @@
             100% { opacity: 1; transform: scale(1); }
         }
         .screen-quiz {
-            display: none;
-            min-height: 100vh;
-            padding: 40px 20px;
+            display: none; min-height: 100vh; padding: 40px 20px;
         }
         .quiz-header { text-align: center; margin-bottom: 40px; }
         .quiz-title {
             font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 900;
-            color: #5c3a21;
-            margin-bottom: 10px;
+            font-weight: 900; color: #5c3a21; margin-bottom: 10px;
         }
         .quiz-progress {
-            font-size: 1.2rem;
-            color: #8b6f47;
-            font-weight: 700;
+            font-size: 1.2rem; color: #8b6f47; font-weight: 700;
         }
         .quiz-container {
-            display: flex;
-            gap: 40px;
-            max-width: 1400px;
-            margin: 0 auto;
-            align-items: flex-start;
+            display: flex; gap: 30px;
+            max-width: 1400px; margin: 0 auto; align-items: stretch;
         }
         .quiz-left {
-            flex: 1;
-            background: white;
-            border-radius: 30px;
-            padding: 40px;
+            flex: 0 0 40%; background: white;
+            border-radius: 30px; padding: 30px;
             box-shadow: 0 20px 60px rgba(92, 58, 33, 0.2);
+            display: flex; flex-direction: column;
         }
         .quiz-question {
-            font-size: clamp(1.3rem, 2.5vw, 1.8rem);
-            font-weight: 900;
-            color: #5c3a21;
-            margin-bottom: 30px;
-            line-height: 1.4;
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            font-weight: 900; color: #5c3a21;
+            margin-bottom: 20px; line-height: 1.4;
         }
-        .quiz-options { display: flex; flex-direction: column; gap: 15px; }
+        .quiz-options { display: flex; flex-direction: column; gap: 12px; }
         .quiz-option {
             background: linear-gradient(135deg, #fff8f0, #ffe8d6);
             border: 3px solid #d4a574;
-            padding: 20px 25px;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #5c3a21;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: left;
-            font-family: 'Nunito', sans-serif;
+            padding: 15px 20px; border-radius: 20px;
+            font-size: 1rem; font-weight: 700; color: #5c3a21;
+            cursor: pointer; transition: all 0.3s;
+            text-align: left; font-family: 'Nunito', sans-serif;
         }
         .quiz-option:hover {
             background: linear-gradient(135deg, #d4a574, #b8860b);
-            color: white;
-            transform: translateX(10px);
+            color: white; transform: translateX(10px);
         }
         .quiz-option.correct {
             background: linear-gradient(135deg, #90ee90, #228b22);
-            border-color: #228b22;
-            color: white;
+            border-color: #228b22; color: white;
         }
         .quiz-option.wrong {
             background: linear-gradient(135deg, #ffb6c1, #dc143c);
-            border-color: #dc143c;
-            color: white;
+            border-color: #dc143c; color: white;
         }
         .quiz-option:disabled { cursor: not-allowed; opacity: 0.7; }
         .quiz-right {
-            flex: 0 0 400px;
-            background: white;
-            border-radius: 30px;
-            padding: 30px;
+            flex: 1; background: white;
+            border-radius: 30px; padding: 30px;
             box-shadow: 0 20px 60px rgba(92, 58, 33, 0.2);
-            min-height: 400px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            min-height: 500px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            position: relative;
         }
         .answer-placeholder {
-            text-align: center;
-            color: #8b6f47;
-            font-size: 1.2rem;
+            text-align: center; color: #8b6f47; font-size: 1.2rem;
         }
         .answer-image {
-            max-width: 100%;
+            max-width: 100%; max-height: 600px;
             border-radius: 20px;
             animation: fadeIn 0.5s ease-out;
+            object-fit: contain;
         }
         .emoji-reaction {
-            font-size: 8rem;
-            animation: bounceIn 0.6s ease-out;
+            font-size: 8rem; animation: bounceIn 0.6s ease-out;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
         .btn-next {
-            display: none;
-            margin-top: 30px;
+            display: none; margin-top: 20px;
             background: linear-gradient(135deg, #d4a574, #b8860b);
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
+            color: white; border: none;
+            padding: 15px 40px; font-size: 1.2rem; font-weight: 700;
+            border-radius: 50px; cursor: pointer;
             box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
-            transition: all 0.3s;
-            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s; font-family: 'Nunito', sans-serif;
+            align-self: flex-start;
         }
         .btn-next:hover { transform: translateY(-3px) scale(1.05); }
         .btn-next.visible { display: block; }
         .screen-result {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 40px 20px;
-            text-align: center;
+            display: none; flex-direction: column;
+            align-items: center; justify-content: center;
+            min-height: 100vh; padding: 40px 20px; text-align: center;
         }
         .result-title {
             font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 900;
-            color: #5c3a21;
-            margin-bottom: 20px;
+            font-weight: 900; color: #5c3a21; margin-bottom: 20px;
         }
         .result-score {
             font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900;
-            color: #d4a574;
-            margin-bottom: 20px;
+            font-weight: 900; color: #d4a574; margin-bottom: 20px;
         }
         .result-message {
-            font-size: 1.5rem;
-            color: #8b6f47;
-            margin-bottom: 40px;
-            max-width: 600px;
+            font-size: 1.5rem; color: #8b6f47;
+            margin-bottom: 40px; max-width: 600px;
         }
         .btn-restart {
             background: linear-gradient(135deg, #d4a574, #b8860b);
-            color: white;
-            border: none;
-            padding: 20px 50px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            border-radius: 50px;
-            cursor: pointer;
+            color: white; border: none;
+            padding: 20px 50px; font-size: 1.5rem; font-weight: 700;
+            border-radius: 50px; cursor: pointer;
             box-shadow: 0 10px 30px rgba(184, 134, 11, 0.4);
-            transition: all 0.3s;
-            font-family: 'Nunito', sans-serif;
+            transition: all 0.3s; font-family: 'Nunito', sans-serif;
         }
         .btn-restart:hover { transform: translateY(-5px) scale(1.05); }
+        .image-error {
+            color: #dc143c; font-size: 1.2rem; font-weight: 700;
+            padding: 20px; text-align: center;
+        }
         @media (max-width: 968px) {
             .quiz-container { flex-direction: column; }
+            .quiz-left { flex: 1; width: 100%; }
             .quiz-right { flex: 1; width: 100%; }
             .guess-cover { max-width: 100%; }
         }
@@ -285,28 +208,24 @@
 </head>
 <body>
 
-    <!-- ЭКРАН 1: УГАДАЙ ПЕСНЮ -->
     <div class="screen-guess" id="screenGuess">
-        <h1 class="guess-title">🎵 Угадай песню! 🎵</h1>
-        <img src="обложка.png" alt="Сидим с бобром за столом" class="guess-cover">
+        <h1 class="guess-title"> Угадай песню! 🎵</h1>
+        <img src="обложка.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.style.display='none'">
         <div class="emoji-puzzle">🪑 + 🦫 + 🪵 + 🥃 + 🎤 + 😌 = ❓</div>
         <p class="puzzle-hint">Это не инструкция по выживанию в тайге и не рецепт коктейля... Нажмите на подсказку!</p>
         <button class="btn-hint" id="btnHint" onclick="showOptions()">💡 Подсказка</button>
-        
         <div class="guess-options" id="guessOptions">
             <button class="guess-option" onclick="checkGuess(this, false)">🌲 «Лесорубы в депрессии»</button>
             <button class="guess-option" onclick="checkGuess(this, false)">🏕️ «Как я провел лето с грызуном»</button>
             <button class="guess-option" onclick="checkGuess(this, false)">🎵 «Хиты Алсу для фагота»</button>
             <button class="guess-option" onclick="checkGuess(this, true)">✅ «Сидим с бобром за столом»</button>
         </div>
-
         <div class="success-message" id="successMessage">✅ Правильно! Переходим к викторине...</div>
     </div>
 
-    <!-- ЭКРАН 2: ВИКТОРИНА -->
     <div class="screen-quiz" id="screenQuiz">
         <div class="quiz-header">
-            <h1 class="quiz-title">🦫 Квиз: Сидим с бобром </h1>
+            <h1 class="quiz-title"> Квиз: Сидим с бобром 🦫</h1>
             <div class="quiz-progress">Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">15</span></div>
         </div>
         <div class="quiz-container">
@@ -324,15 +243,13 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: РЕЗУЛЬТАТ -->
     <div class="screen-result" id="screenResult">
-        <h1 class="result-title">🎉 Квиз завершён! 🎉</h1>
+        <h1 class="result-title"> Квиз завершён! 🎉</h1>
         <div class="result-score"><span id="scoreCorrect">0</span> / <span id="scoreTotal">15</span></div>
         <div class="result-message" id="resultMessage"></div>
         <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
     </div>
 
-    <!-- Аудио элементы (файлы в корне) -->
     <audio id="audio1" preload="auto"><source src="1.mp3" type="audio/mpeg"></audio>
     <audio id="audio2" preload="auto"><source src="2.mp3" type="audio/mpeg"></audio>
     <audio id="audio3" preload="auto"><source src="3.mp3" type="audio/mpeg"></audio>
@@ -341,120 +258,29 @@
     <audio id="audio8" preload="auto"><source src="8.mp3" type="audio/mpeg"></audio>
     <audio id="audio9" preload="auto"><source src="9.mp3" type="audio/mpeg"></audio>
     <audio id="audio14" preload="auto"><source src="14.mp3" type="audio/mpeg"></audio>
-    <audio id="audioSong" preload="auto"><source src="песня.mp3" type="audio/mpeg"></audio>
 
     <script>
         const questions = [
-            {
-                question: "Где именно находятся лирический герой и бобёр в самом начале песни?",
-                options: ["В бобровой хатке с видом на реку", "На пне в глухом лесу", "За столом", "В баре «У дяди Бобра»"],
-                correct: 2,
-                image: "q01-table.png",
-                audio: "audio1"
-            },
-            {
-                question: "Что они готовят вдвоём на ужин?",
-                options: ["Суши из коры и мха", "Полено", "Борщ с бобровым хвостом", "Пасту карбонара (без глютена)"],
-                correct: 1,
-                image: "q02-log.png",
-                audio: "audio2"
-            },
-            {
-                question: "О чём лирический герой предлагает поговорить бобру?",
-                options: ["О курсе криптовалют и биткоине", "О том, что наболело", "О глобальном потеплении и экологии", "О новых правилах парковки во дворе"],
-                correct: 1,
-                image: "q03-conversation.png",
-                audio: "audio3"
-            },
-            {
-                question: "Какой главный философский вопрос герой задаёт бобру?",
-                options: ["«Скажи, зачем же между нами плотина?»", "«Кто подставил кролика Роджера?»", "«Быть или не быть, вот в чём вопрос»", "«Где взять деньги на ипотеку?»"],
-                correct: 0,
-                image: "q04-dam.png",
-                audio: "audio4"
-            },
-            {
-                question: "Какое ещё препятствие, кроме плотины, упоминается между ними в песне?",
-                options: ["Высокий забор из профнастила", "Обрыв", "Очередь в поликлинику", "Стена из взаимного непонимания"],
-                correct: 1,
-                image: "q05-cliff.png",
-                audio: "audioSong"
-            },
-            {
-                question: "Какое удивительное свойство бобров с восторгом отмечает лирический герой?",
-                options: ["Они умеют летать на небольших расстояниях", "Они так добры", "Они знают язык программирования Python", "Они официально не платят налоги"],
-                correct: 1,
-                image: "q06-kind.png",
-                audio: "audioSong"
-            },
-            {
-                question: "Чем, помимо готовки полена, занимаются герой и бобёр вместе?",
-                options: ["Играют в шахматы на время", "Поют с бобром хиты Алсу", "Строят атомную электростанцию", "Смотрят сериал «Слово пацана»"],
-                correct: 1,
-                image: "q07-singing.png",
-                audio: "audio7"
-            },
-            {
-                question: "Какое чувство испытывает лирический герой, находясь рядом с бобром?",
-                options: ["Ему так офигенно", "Лёгкая ностальгическая грусть", "Экзистенциальный ужас", "Сильное желание спать"],
-                correct: 0,
-                image: "q08-hug.png",
-                audio: "audio8"
-            },
-            {
-                question: "Какие напитки упоминаются в одной из версий текста, когда они сидят за столом?",
-                options: ["Чай с малиной и мёдом", "Текила и ром", "Квас «Очаковский»", "Смузи из хвои и шишек"],
-                correct: 1,
-                image: "q09-drinks.png",
-                audio: "audio9"
-            },
-            {
-                question: "Как лучше всего охарактеризовать музыкальный жанр этого шедевра?",
-                options: ["Симфоническая опера в трёх актах", "Норвежский блэк-метал", "Мемный поп-хит / лирический шансон", "Японский традиционный фольклор"],
-                correct: 2,
-                image: "q10-music.png",
-                audio: "audioSong"
-            },
-            {
-                question: "Если бы бобёр реально ответил на вопрос «зачем между нами плотина?», что бы он сказал с точки зрения биологии?",
-                options: ["Чтобы создать запруду и защитить свою хатку от хищников", "Потому что он тайно ненавидит лирического героя", "Это его новый арт-объект для выставки современного искусства", "Он просто потерял ключи от калитки"],
-                correct: 0,
-                image: "q11-building.png",
-                audio: "audioSong"
-            },
-            {
-                question: "Какое животное является главной музой и соведущим этой песни?",
-                options: ["Выдра", "Бобёр", "Енот-полоскун", "Капибара"],
-                correct: 1,
-                image: "q12-portrait.png",
-                audio: "audioSong"
-            },
-            {
-                question: "Чего лирический герой ТОЧНО НЕ делает с бобром в этой песне?",
-                options: ["Не готовит полено", "Не разговаривает о наболевшем", "Не оформляет совместную ипотеку на хатку", "Не поёт хиты Алсу"],
-                correct: 2,
-                image: "q13-mortgage.png",
-                audio: "audioSong"
-            },
-            {
-                question: "Какая фраза из песни лучше всего описывает уровень доверия между героем и бобром?",
-                options: ["«Скажи мне честно, бобёр»", "«Дай в долг до пятницы, бобёр»", "«Не верь, не бойся, не проси, бобёр»", "«Ты кто такой? Давай, до свидания!»"],
-                correct: 0,
-                image: "q14-trust.png",
-                audio: "audio14"
-            },
-            {
-                question: "Какой главный жизненный вывод можно сделать, прослушав эту песню?",
-                options: ["Бобры – это опасные хищники, держитесь от них подальше", "Дружба с бобром – это офигенно", "Нужно срочно идти и строить плотину", "Полено – это новый чёрный"],
-                correct: 1,
-                image: "q15-cinema.png",
-                audio: "audioSong"
-            }
+            { question: "Где именно находятся лирический герой и бобёр в самом начале песни?", options: ["В бобровой хатке с видом на реку", "На пне в глухом лесу", "За столом", "В баре «У дяди Бобра»"], correct: 2, image: "q01-table.png", audio: "audio1" },
+            { question: "Что они готовят вдвоём на ужин?", options: ["Суши из коры и мха", "Полено", "Борщ с бобровым хвостом", "Пасту карбонара (без глютена)"], correct: 1, image: "q02-log.png", audio: "audio2" },
+            { question: "О чём лирический герой предлагает поговорить бобру?", options: ["О курсе криптовалют и биткоине", "О том, что наболело", "О глобальном потеплении и экологии", "О новых правилах парковки во дворе"], correct: 1, image: "q03-conversation.png", audio: "audio3" },
+            { question: "Какой главный философский вопрос герой задаёт бобру?", options: ["«Скажи, зачем же между нами плотина?»", "«Кто подставил кролика Роджера?»", "«Быть или не быть, вот в чём вопрос»", "«Где взять деньги на ипотеку?»"], correct: 0, image: "q04-dam.png", audio: "audio4" },
+            { question: "Какое ещё препятствие, кроме плотины, упоминается между ними в песне?", options: ["Высокий забор из профнастила", "Обрыв", "Очередь в поликлинику", "Стена из взаимного непонимания"], correct: 1, image: "q05-cliff.png", audio: null },
+            { question: "Какое удивительное свойство бобров с восторгом отмечает лирический герой?", options: ["Они умеют летать на небольших расстояниях", "Они так добры", "Они знают язык программирования Python", "Они официально не платят налоги"], correct: 1, image: "q06-kind.png", audio: null },
+            { question: "Чем, помимо готовки полена, занимаются герой и бобёр вместе?", options: ["Играют в шахматы на время", "Поют с бобром хиты Алсу", "Строят атомную электростанцию", "Смотрят сериал «Слово пацана»"], correct: 1, image: "q07-singing.png", audio: "audio7" },
+            { question: "Какое чувство испытывает лирический герой, находясь рядом с бобром?", options: ["Ему так офигенно", "Лёгкая ностальгическая грусть", "Экзистенциальный ужас", "Сильное желание спать"], correct: 0, image: "q08-hug.png", audio: "audio8" },
+            { question: "Какие напитки упоминаются в одной из версий текста, когда они сидят за столом?", options: ["Чай с малиной и мёдом", "Текила и ром", "Квас «Очаковский»", "Смузи из хвои и шишек"], correct: 1, image: "q09-drinks.png", audio: "audio9" },
+            { question: "Как лучше всего охарактеризовать музыкальный жанр этого шедевра?", options: ["Симфоническая опера в трёх актах", "Норвежский блэк-метал", "Мемный поп-хит / лирический шансон", "Японский традиционный фольклор"], correct: 2, image: "q10-music.png", audio: null },
+            { question: "Если бы бобёр реально ответил на вопрос «зачем между нами плотина?», что бы он сказал с точки зрения биологии?", options: ["Чтобы создать запруду и защитить свою хатку от хищников", "Потому что он тайно ненавидит лирического героя", "Это его новый арт-объект для выставки современного искусства", "Он просто потерял ключи от калитки"], correct: 0, image: "q11-building.png", audio: null },
+            { question: "Какое животное является главной музой и соведущим этой песни?", options: ["Выдра", "Бобёр", "Енот-полоскун", "Капибара"], correct: 1, image: "q12-portrait.png", audio: null },
+            { question: "Чего лирический герой ТОЧНО НЕ делает с бобром в этой песне?", options: ["Не готовит полено", "Не разговаривает о наболевшем", "Не оформляет совместную ипотеку на хатку", "Не поёт хиты Алсу"], correct: 2, image: "q13-mortgage.png", audio: null },
+            { question: "Какая фраза из песни лучше всего описывает уровень доверия между героем и бобром?", options: ["«Скажи мне честно, бобёр»", "«Дай в долг до пятницы, бобёр»", "«Не верь, не бойся, не проси, бобёр»", "«Ты кто такой? Давай, до свидания!»"], correct: 0, image: "q14-trust.png", audio: "audio14" },
+            { question: "Какой главный жизненный вывод можно сделать, прослушав эту песню?", options: ["Бобры – это опасные хищники, держитесь от них подальше", "Дружба с бобром – это офигенно", "Нужно срочно идти и строить плотину", "Полено – это новый чёрный"], correct: 1, image: "q15-cinema.png", audio: null }
         ];
 
         let currentQuestionIndex = 0;
         let correctAnswers = 0;
-        const emojiReactions = ['😡', '😞', '', '😢', '😭', ''];
+        const emojiReactions = ['', '😞', '😂', '', '😭', '🤕'];
 
         function showOptions() {
             document.getElementById('guessOptions').classList.add('visible');
@@ -464,7 +290,6 @@
         function checkGuess(button, isCorrect) {
             const allButtons = document.querySelectorAll('.guess-option');
             allButtons.forEach(btn => btn.disabled = true);
-
             if (isCorrect) {
                 button.classList.add('correct');
                 document.getElementById('successMessage').classList.add('visible');
@@ -472,10 +297,7 @@
             } else {
                 button.classList.add('wrong');
                 setTimeout(() => {
-                    allButtons.forEach(btn => {
-                        btn.disabled = false;
-                        btn.classList.remove('wrong');
-                    });
+                    allButtons.forEach(btn => { btn.disabled = false; btn.classList.remove('wrong'); });
                 }, 1000);
             }
         }
@@ -492,10 +314,8 @@
             document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
             document.getElementById('questionText').textContent = q.question;
             document.getElementById('btnNext').classList.remove('visible');
-
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
-
             q.options.forEach((option, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'quiz-option';
@@ -503,10 +323,9 @@
                 btn.onclick = () => checkAnswer(index, btn);
                 optionsContainer.appendChild(btn);
             });
-
             document.getElementById('answerArea').innerHTML = `
                 <div class="answer-placeholder">
-                    <div style="font-size: 4rem; margin-bottom: 20px;"></div>
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🎯</div>
                     <div>Здесь появится ответ!</div>
                 </div>
             `;
@@ -516,19 +335,21 @@
             const q = questions[currentQuestionIndex];
             const allButtons = document.querySelectorAll('.quiz-option');
             allButtons.forEach(btn => btn.disabled = true);
-
             if (selectedIndex === q.correct) {
                 button.classList.add('correct');
                 correctAnswers++;
-                
                 document.getElementById('answerArea').innerHTML = `
-                    <img src="${q.image}" alt="Ответ" class="answer-image">
+                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>🖼️ Картинка не загрузилась<br><small>Проверьте имя файла: ${q.image}</small></div>'">
                 `;
-
-                const audio = document.getElementById(q.audio);
-                if (audio) {
-                    audio.currentTime = 0;
-                    audio.play().catch(e => console.log('Аудио не найдено:', q.audio));
+                if (q.audio) {
+                    const audio = document.getElementById(q.audio);
+                    if (audio) {
+                        audio.currentTime = 0;
+                        audio.play().catch(e => {
+                            console.log('Аудио не удалось воспроизвести:', e);
+                            alert(' Нажмите на кнопку ещё раз, чтобы включить звук');
+                        });
+                    }
                 }
             } else {
                 button.classList.add('wrong');
@@ -538,7 +359,6 @@
                     <div class="emoji-reaction">${randomEmoji}</div>
                 `;
             }
-
             document.getElementById('btnNext').classList.add('visible');
         }
 
@@ -556,22 +376,13 @@
             document.getElementById('screenResult').style.display = 'flex';
             document.getElementById('scoreCorrect').textContent = correctAnswers;
             document.getElementById('scoreTotal').textContent = questions.length;
-
             let message = '';
             const percentage = (correctAnswers / questions.length) * 100;
-
-            if (percentage === 100) {
-                message = '🏆 Идеально! Ты настоящий бобровед! Бобёр бы тобой гордился! 🦫✨';
-            } else if (percentage >= 80) {
-                message = '🌟 Отлично! Ты почти так же офигенно, как бобёр!';
-            } else if (percentage >= 60) {
-                message = '👍 Неплохо! Но бобёр ожидает от тебя большего!';
-            } else if (percentage >= 40) {
-                message = '😅 Ну такое... Пора переслушать песню раз 100! ';
-            } else {
-                message = '😱 Ой-ой... Бобёр расстроен! Срочно иди слушать песню! ';
-            }
-
+            if (percentage === 100) message = ' Идеально! Ты настоящий бобровед! Бобёр бы тобой гордился! 🦫✨';
+            else if (percentage >= 80) message = '🌟 Отлично! Ты почти так же офигенно, как бобёр!';
+            else if (percentage >= 60) message = '👍 Неплохо! Но бобёр ожидает от тебя большего!';
+            else if (percentage >= 40) message = '😅 Ну такое... Пора переслушать песню раз 100! 🎵';
+            else message = '😱 Ой-ой... Бобёр расстроен! Срочно иди слушать песню! 💔';
             document.getElementById('resultMessage').textContent = message;
         }
 
@@ -589,6 +400,5 @@
             });
         }
     </script>
-
 </body>
 </html>
