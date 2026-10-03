@@ -8,7 +8,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* ЭКРАН ЗАГРУЗКИ - упрощённый */
         .loader-screen {
             position: fixed;
             top: 0; left: 0;
@@ -255,7 +254,6 @@
             border: 2px solid #8B5A2B;
         }
 
-        /* 🎉 САЛЮТ И КОНФЕТТИ */
         .celebration {
             position: fixed;
             top: 0; left: 0;
@@ -296,13 +294,11 @@
 </head>
 <body>
 
-    <!-- ЭКРАН ЗАГРУЗКИ -->
     <div class="loader-screen" id="loaderScreen">
-        <div class="loader-beaver">🦫</div>
+        <div class="loader-beaver"></div>
         <div class="loader-text">Бобёр готовится...</div>
     </div>
 
-    <!-- ЭКРАН 1: УГАДАЙ ПЕСНЮ -->
     <div class="screen-guess" id="screenGuess">
         <h1 class="guess-title"> Угадай песню! 🎵</h1>
         <img src="cover.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.outerHTML='<div style=font-size:4rem;margin-bottom:20px;>🦫🌲</div>'">
@@ -318,7 +314,6 @@
         <div class="success-message" id="successMessage">✅ Правильно! Переходим к викторине...</div>
     </div>
 
-    <!-- ЭКРАН 2: ВИКТОРИНА -->
     <div class="screen-quiz" id="screenQuiz">
         <div class="quiz-header">
             <h1 class="quiz-title">🦫 Квиз: Сидим с бобром </h1>
@@ -339,18 +334,15 @@
         </div>
     </div>
 
-    <!-- ЭКРАН 3: РЕЗУЛЬТАТ -->
     <div class="screen-result" id="screenResult">
-        <h1 class="result-title">🌲 Квиз завершён! 🎉</h1>
+        <h1 class="result-title">🌲 Результаты 🎉</h1>
         <div class="result-score"><span id="scoreCorrect">0</span> / <span id="scoreTotal">15</span></div>
         <div class="result-message" id="resultMessage"></div>
         <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
     </div>
 
-    <!-- Контейнер для конфетти -->
     <div class="celebration" id="celebration"></div>
 
-    <!-- Аудио - preload="none" для быстрой загрузки -->
     <audio id="audio1" preload="none"><source src="1.mp3" type="audio/mpeg"></audio>
     <audio id="audio2" preload="none"><source src="2.mp3" type="audio/mpeg"></audio>
     <audio id="audio3" preload="none"><source src="3.mp3" type="audio/mpeg"></audio>
@@ -362,7 +354,6 @@
     <audio id="audioEnd" preload="none"><source src="end.mp3" type="audio/mpeg"></audio>
 
     <script>
-        // Быстрая загрузка - убираем экран через 1.5 секунды
         window.addEventListener('load', () => {
             setTimeout(() => {
                 document.getElementById('loaderScreen').classList.add('hidden');
@@ -389,7 +380,8 @@
 
         let currentQuestionIndex = 0;
         let correctAnswers = 0;
-        const emojiReactions = ['', '😞', '', '😢', '😭', ''];
+        // ✅ ВСЕ смайлики заполнены - теперь всегда будут появляться
+        const emojiReactions = ['😡', '😞', '😂', '😢', '😭', '🤕', '😅', '🙈', '😿', '💔'];
 
         function showOptions() {
             document.getElementById('guessOptions').classList.add('visible');
@@ -422,7 +414,17 @@
             const q = questions[currentQuestionIndex];
             document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
             document.getElementById('questionText').textContent = q.question;
-            document.getElementById('btnNext').classList.remove('visible');
+            
+            // ✅ На последнем вопросе (15) скрываем кнопку "Следующий вопрос"
+            const btnNext = document.getElementById('btnNext');
+            if (currentQuestionIndex === questions.length - 1) {
+                btnNext.classList.remove('visible');
+                btnNext.style.display = 'none';
+            } else {
+                btnNext.classList.remove('visible');
+                btnNext.style.display = '';
+            }
+            
             const optionsContainer = document.getElementById('optionsContainer');
             optionsContainer.innerHTML = '';
             q.options.forEach((option, index) => {
@@ -444,26 +446,53 @@
             const q = questions[currentQuestionIndex];
             const allButtons = document.querySelectorAll('.quiz-option');
             allButtons.forEach(btn => btn.disabled = true);
+            const isLastQuestion = (currentQuestionIndex === questions.length - 1);
+            
             if (selectedIndex === q.correct) {
                 button.classList.add('correct');
                 correctAnswers++;
                 document.getElementById('answerArea').innerHTML = `
                     <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>️ Картинка не загрузилась<br><small>Проверьте файл: ${q.image}</small></div>'">
                 `;
-                if (q.audio) {
+                
+                // ✅ На последнем вопросе - всегда играем финальную музыку
+                if (isLastQuestion) {
+                    playEndMusic();
+                    setTimeout(() => showResult(), 4000);
+                } else if (q.audio) {
                     const audio = document.getElementById(q.audio);
                     if (audio) {
                         audio.currentTime = 0;
                         audio.play().catch(e => console.log('Аудио:', e));
                     }
+                    document.getElementById('btnNext').classList.add('visible');
+                } else {
+                    document.getElementById('btnNext').classList.add('visible');
                 }
             } else {
                 button.classList.add('wrong');
                 allButtons[q.correct].classList.add('correct');
+                // ✅ Всегда показываем случайный смайлик
                 const randomEmoji = emojiReactions[Math.floor(Math.random() * emojiReactions.length)];
                 document.getElementById('answerArea').innerHTML = `<div class="emoji-reaction">${randomEmoji}</div>`;
+                
+                // ✅ На последнем вопросе - всегда играем финальную музыку
+                if (isLastQuestion) {
+                    playEndMusic();
+                    setTimeout(() => showResult(), 4000);
+                } else {
+                    document.getElementById('btnNext').classList.add('visible');
+                }
             }
-            document.getElementById('btnNext').classList.add('visible');
+        }
+
+        // 🎵 Функция для воспроизведения финальной музыки
+        function playEndMusic() {
+            const endAudio = document.getElementById('audioEnd');
+            if (endAudio) {
+                endAudio.currentTime = 0;
+                endAudio.play().catch(e => console.log('Финальная музыка:', e));
+            }
         }
 
         function nextQuestion() {
@@ -475,12 +504,10 @@
             }
         }
 
-        // 🎉 ФУНКЦИЯ САЛЮТА И КОНФЕТТИ
         function createCelebration() {
             const celebration = document.getElementById('celebration');
             const colors = ['#7A9E6B', '#5C7A7A', '#E8D98C', '#8B5A2B', '#2D4A2D'];
             
-            // Конфетти (50 штук)
             for (let i = 0; i < 50; i++) {
                 setTimeout(() => {
                     const confetti = document.createElement('div');
@@ -493,7 +520,6 @@
                 }, i * 50);
             }
             
-            // Салют (3 взрыва)
             for (let i = 0; i < 3; i++) {
                 setTimeout(() => {
                     const firework = document.createElement('div');
@@ -512,8 +538,8 @@
             document.getElementById('scoreCorrect').textContent = correctAnswers;
             document.getElementById('scoreTotal').textContent = questions.length;
             
-            // 🎉 Запускаем салют и музыку!
             createCelebration();
+            
             const endAudio = document.getElementById('audioEnd');
             if (endAudio) {
                 endAudio.currentTime = 0;
@@ -523,7 +549,7 @@
             let message = '';
             const percentage = (correctAnswers / questions.length) * 100;
             if (percentage === 100) message = '🌲 Идеально! Ты настоящий бобровед! Бобёр тобой гордится! ✨';
-            else if (percentage >= 80) message = '🌟 Отлично! Ты почти так же офигенно, как бобёр!';
+            else if (percentage >= 80) message = ' Отлично! Ты почти так же офигенно, как бобёр!';
             else if (percentage >= 60) message = '👍 Неплохо! Но бобёр ожидает от тебя большего!';
             else if (percentage >= 40) message = '😅 Ну такое... Пора переслушать песню раз 100! ';
             else message = '😱 Ой-ой... Бобёр расстроен! Срочно иди слушать песню! 💔';
@@ -542,7 +568,6 @@
                 btn.disabled = false;
                 btn.classList.remove('correct', 'wrong');
             });
-            // Остановить музыку
             const endAudio = document.getElementById('audioEnd');
             if (endAudio) {
                 endAudio.pause();
