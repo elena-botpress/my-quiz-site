@@ -7,6 +7,59 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* ЭКРАН ЗАГРУЗКИ */
+        .loader-screen {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, #B5C4A8 0%, #E8D98C 50%, #7A9E6B 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+        .loader-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loader-beaver {
+            font-size: 6rem;
+            animation: bounce 1s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .loader-text {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2D4A2D;
+            margin-top: 20px;
+        }
+        .loader-bar {
+            width: 300px;
+            height: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #7A9E6B, #2D4A2D);
+            width: 0%;
+            border-radius: 10px;
+            animation: loadProgress 2s ease-out forwards;
+        }
+        @keyframes loadProgress {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
         body {
             font-family: 'Nunito', sans-serif;
             background: linear-gradient(135deg, #B5C4A8 0%, #E8D98C 50%, #7A9E6B 100%);
@@ -246,10 +299,20 @@
 </head>
 <body>
 
+    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <div class="loader-screen" id="loaderScreen">
+        <div class="loader-beaver">🦫</div>
+        <div class="loader-text">Бобёр готовит викторину...</div>
+        <div class="loader-bar">
+            <div class="loader-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 1: УГАДАЙ ПЕСНЮ -->
     <div class="screen-guess" id="screenGuess">
-        <h1 class="guess-title">🌲 Угадай песню! 🎵</h1>
+        <h1 class="guess-title"> Угадай песню! 🎵</h1>
         <img src="cover.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.outerHTML='<div style=font-size:4rem;margin-bottom:20px;>🦫🌲</div>'">
-        <div class="emoji-puzzle">🪑 + 🦫 + 🪵 + 🥃 + 🎤 + 😌 = ❓</div>
+        <div class="emoji-puzzle">🪑 + 🦫 +  + 🥃 + 🎤 + 😌 = ❓</div>
         <p class="puzzle-hint">Это не инструкция по выживанию в тайге и не рецепт коктейля... Нажмите на подсказку!</p>
         <button class="btn-hint" id="btnHint" onclick="showOptions()">💡 Подсказка</button>
         <div class="guess-options" id="guessOptions">
@@ -261,9 +324,10 @@
         <div class="success-message" id="successMessage">✅ Правильно! Переходим к викторине...</div>
     </div>
 
+    <!-- ЭКРАН 2: ВИКТОРИНА -->
     <div class="screen-quiz" id="screenQuiz">
         <div class="quiz-header">
-            <h1 class="quiz-title">🦫 Квиз: Сидим с бобром 🌲</h1>
+            <h1 class="quiz-title">🦫 Квиз: Сидим с бобром </h1>
             <div class="quiz-progress">Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">15</span></div>
         </div>
         <div class="quiz-container">
@@ -281,23 +345,32 @@
         </div>
     </div>
 
+    <!-- ЭКРАН 3: РЕЗУЛЬТАТ -->
     <div class="screen-result" id="screenResult">
-        <h1 class="result-title">🌲 Квиз завершён! 🎉</h1>
+        <h1 class="result-title">🌲 Квиз завершён! </h1>
         <div class="result-score"><span id="scoreCorrect">0</span> / <span id="scoreTotal">15</span></div>
         <div class="result-message" id="resultMessage"></div>
-        <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
+        <button class="btn-restart" onclick="restartQuiz()"> Пройти ещё раз</button>
     </div>
 
-    <audio id="audio1" preload="auto"><source src="1.mp3" type="audio/mpeg"></audio>
-    <audio id="audio2" preload="auto"><source src="2.mp3" type="audio/mpeg"></audio>
-    <audio id="audio3" preload="auto"><source src="3.mp3" type="audio/mpeg"></audio>
-    <audio id="audio4" preload="auto"><source src="4.mp3" type="audio/mpeg"></audio>
-    <audio id="audio7" preload="auto"><source src="7.mp3" type="audio/mpeg"></audio>
-    <audio id="audio8" preload="auto"><source src="8.mp3" type="audio/mpeg"></audio>
-    <audio id="audio9" preload="auto"><source src="9.mp3" type="audio/mpeg"></audio>
-    <audio id="audio14" preload="auto"><source src="14.mp3" type="audio/mpeg"></audio>
+    <!-- Аудио элементы - preload="none" чтобы не грузить сразу -->
+    <audio id="audio1" preload="none"><source src="1.mp3" type="audio/mpeg"></audio>
+    <audio id="audio2" preload="none"><source src="2.mp3" type="audio/mpeg"></audio>
+    <audio id="audio3" preload="none"><source src="3.mp3" type="audio/mpeg"></audio>
+    <audio id="audio4" preload="none"><source src="4.mp3" type="audio/mpeg"></audio>
+    <audio id="audio7" preload="none"><source src="7.mp3" type="audio/mpeg"></audio>
+    <audio id="audio8" preload="none"><source src="8.mp3" type="audio/mpeg"></audio>
+    <audio id="audio9" preload="none"><source src="9.mp3" type="audio/mpeg"></audio>
+    <audio id="audio14" preload="none"><source src="14.mp3" type="audio/mpeg"></audio>
 
     <script>
+        // Убираем экран загрузки через 2 секунды
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loaderScreen').classList.add('hidden');
+            }, 2000);
+        });
+
         const questions = [
             { question: "Где именно находятся лирический герой и бобёр в самом начале песни?", options: ["В бобровой хатке с видом на реку", "На пне в глухом лесу", "За столом", "В баре «У дяди Бобра»"], correct: 2, image: "q01-table.png", audio: "audio1" },
             { question: "Что они готовят вдвоём на ужин?", options: ["Суши из коры и мха", "Полено", "Борщ с бобровым хвостом", "Пасту карбонара (без глютена)"], correct: 1, image: "q02-log.png", audio: "audio2" },
@@ -318,7 +391,7 @@
 
         let currentQuestionIndex = 0;
         let correctAnswers = 0;
-        const emojiReactions = ['😡', '😞', '😂', '😢', '😭', '🤕'];
+        const emojiReactions = ['😡', '😞', '😂', '😢', '😭', ''];
 
         function showOptions() {
             document.getElementById('guessOptions').classList.add('visible');
@@ -377,7 +450,7 @@
                 button.classList.add('correct');
                 correctAnswers++;
                 document.getElementById('answerArea').innerHTML = `
-                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>🖼️ Картинка не загрузилась<br><small>Проверьте файл: ${q.image}</small></div>'">
+                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>️ Картинка не загрузилась<br><small>Проверьте файл: ${q.image}</small></div>'">
                 `;
                 if (q.audio) {
                     const audio = document.getElementById(q.audio);
@@ -411,7 +484,7 @@
             document.getElementById('scoreTotal').textContent = questions.length;
             let message = '';
             const percentage = (correctAnswers / questions.length) * 100;
-            if (percentage === 100) message = '🌲 Идеально! Ты настоящий бобровед! Бобёр бы тобой гордился! 🦫✨';
+            if (percentage === 100) message = '🌲 Идеально! Ты настоящий бобровед! Бобёр бы тобой гордился! ✨';
             else if (percentage >= 80) message = '🌟 Отлично! Ты почти так же офигенно, как бобёр!';
             else if (percentage >= 60) message = '👍 Неплохо! Но бобёр ожидает от тебя большего!';
             else if (percentage >= 40) message = '😅 Ну такое... Пора переслушать песню раз 100! 🎵';
