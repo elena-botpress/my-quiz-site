@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🦫 Квиз: Сидим с бобром</title>
+    <title>Квиз: Сидим с бобром</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* ✅ СИСТЕМНЫЕ ШРИФТЫ - работают без интернета! */
         body {
-            font-family: 'Comic Sans MS', 'Arial Rounded MT Bold', 'Segoe UI', Arial, sans-serif;
+            font-family: Arial, sans-serif;
             background: linear-gradient(135deg, #B5C4A8 0%, #E8D98C 50%, #7A9E6B 100%);
             min-height: 100vh;
             overflow-x: hidden;
-            position: relative;
         }
         
         .loader-screen {
@@ -42,7 +40,7 @@
         }
         .loader-text {
             font-size: 1.3rem;
-            font-weight: 700;
+            font-weight: bold;
             color: #2D4A2D;
             margin-top: 15px;
         }
@@ -51,13 +49,12 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             min-height: 100vh; padding: 40px 20px;
-            text-align: center; position: relative; z-index: 1;
+            text-align: center;
         }
         .guess-title {
             font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 900; color: #2D4A2D;
+            font-weight: bold; color: #2D4A2D;
             margin-bottom: 30px; text-transform: uppercase;
-            letter-spacing: 3px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
         .guess-cover {
             max-width: 700px; width: 100%;
@@ -68,7 +65,7 @@
         }
         .emoji-puzzle {
             font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 20px; letter-spacing: 10px;
+            margin-bottom: 20px;
         }
         .puzzle-hint {
             font-size: 1.2rem; color: #5C7A7A;
@@ -77,15 +74,12 @@
         .btn-hint {
             background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
             color: white; border: 3px solid #8B5A2B;
-            padding: 20px 50px; font-size: 1.5rem; font-weight: 700;
+            padding: 20px 50px; font-size: 1.5rem; font-weight: bold;
             border-radius: 50px; cursor: pointer;
             box-shadow: 0 10px 30px rgba(45, 74, 45, 0.4);
-            transition: all 0.3s;
         }
         .btn-hint:hover {
             transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(45, 74, 45, 0.6);
-            background: linear-gradient(135deg, #5C7A7A, #2D4A2D);
         }
         .guess-options {
             display: none; flex-direction: column;
@@ -95,12 +89,11 @@
         .guess-option {
             background: white; border: 3px solid #7A9E6B;
             padding: 20px; border-radius: 20px;
-            font-size: 1.2rem; font-weight: 700; color: #2D4A2D;
-            cursor: pointer; transition: all 0.3s;
+            font-size: 1.2rem; font-weight: bold; color: #2D4A2D;
+            cursor: pointer;
         }
         .guess-option:hover {
             background: #7A9E6B; color: white;
-            transform: scale(1.02); border-color: #2D4A2D;
         }
         .guess-option.correct {
             background: #7A9E6B; border-color: #2D4A2D; color: white;
@@ -110,59 +103,50 @@
         }
         .guess-option:disabled { cursor: not-allowed; }
         .success-message {
-            display: none; font-size: 2.5rem; font-weight: 900;
+            display: none; font-size: 2.5rem; font-weight: bold;
             color: #2D4A2D; margin-top: 30px;
-            animation: bounceIn 0.6s ease-out;
         }
         .success-message.visible { display: block; }
-        @keyframes bounceIn {
-            0% { opacity: 0; transform: scale(0.3); }
-            50% { transform: scale(1.1); }
-            70% { transform: scale(0.9); }
-            100% { opacity: 1; transform: scale(1); }
-        }
+        
         .screen-quiz {
             display: none; min-height: 100vh;
-            padding: 40px 20px; position: relative; z-index: 1;
+            padding: 40px 20px;
         }
         .quiz-header { text-align: center; margin-bottom: 40px; }
         .quiz-title {
             font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: 900; color: #2D4A2D;
-            margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-weight: bold; color: #2D4A2D;
+            margin-bottom: 10px;
         }
         .quiz-progress {
-            font-size: 1.2rem; color: #5C7A7A; font-weight: 700;
+            font-size: 1.2rem; color: #5C7A7A; font-weight: bold;
         }
         .quiz-container {
             display: flex; gap: 30px;
-            max-width: 1400px; margin: 0 auto; align-items: stretch;
+            max-width: 1400px; margin: 0 auto;
         }
         .quiz-left {
             flex: 0 0 40%; background: white;
             border-radius: 30px; padding: 30px;
-            box-shadow: 0 20px 60px rgba(45, 74, 45, 0.2);
-            display: flex; flex-direction: column;
             border: 3px solid #7A9E6B;
         }
         .quiz-question {
             font-size: clamp(1.1rem, 2vw, 1.5rem);
-            font-weight: 900; color: #2D4A2D;
-            margin-bottom: 20px; line-height: 1.4;
+            font-weight: bold; color: #2D4A2D;
+            margin-bottom: 20px;
         }
         .quiz-options { display: flex; flex-direction: column; gap: 12px; }
         .quiz-option {
             background: linear-gradient(135deg, #B5C4A8, #E8D98C);
             border: 3px solid #7A9E6B;
             padding: 15px 20px; border-radius: 20px;
-            font-size: 1rem; font-weight: 700; color: #2D4A2D;
-            cursor: pointer; transition: all 0.3s;
+            font-size: 1rem; font-weight: bold; color: #2D4A2D;
+            cursor: pointer;
             text-align: left;
         }
         .quiz-option:hover {
             background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
-            color: white; transform: translateX(10px);
-            border-color: #2D4A2D;
+            color: white;
         }
         .quiz-option.correct {
             background: linear-gradient(135deg, #7A9E6B, #2D4A2D);
@@ -176,11 +160,10 @@
         .quiz-right {
             flex: 1; background: white;
             border-radius: 30px; padding: 30px;
-            box-shadow: 0 20px 60px rgba(45, 74, 45, 0.2);
             min-height: 500px;
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            position: relative; border: 3px solid #7A9E6B;
+            border: 3px solid #7A9E6B;
         }
         .answer-placeholder {
             text-align: center; color: #5C7A7A; font-size: 1.2rem;
@@ -188,47 +171,38 @@
         .answer-image {
             max-width: 100%; max-height: 600px;
             border-radius: 20px;
-            animation: fadeIn 0.5s ease-out;
-            object-fit: contain;
             border: 4px solid #8B5A2B;
         }
         .emoji-reaction {
-            font-size: 8rem; animation: bounceIn 0.6s ease-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
+            font-size: 8rem;
         }
         .btn-next {
             display: none; margin-top: 20px;
             background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
             color: white; border: 3px solid #8B5A2B;
-            padding: 15px 40px; font-size: 1.2rem; font-weight: 700;
+            padding: 15px 40px; font-size: 1.2rem; font-weight: bold;
             border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(45, 74, 45, 0.4);
-            transition: all 0.3s;
-            align-self: flex-start;
         }
         .btn-next:hover {
             transform: translateY(-3px) scale(1.05);
-            background: linear-gradient(135deg, #5C7A7A, #2D4A2D);
         }
         .btn-next.visible { display: block; }
+        
         .screen-result {
             display: none; flex-direction: column;
             align-items: center; justify-content: center;
             min-height: 100vh; padding: 40px 20px;
-            text-align: center; position: relative; z-index: 1;
+            text-align: center;
         }
         .result-title {
             font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: 900; color: #2D4A2D;
-            margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-weight: bold; color: #2D4A2D;
+            margin-bottom: 20px;
         }
         .result-score {
             font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: 900; color: #7A9E6B;
-            margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            font-weight: bold; color: #7A9E6B;
+            margin-bottom: 20px;
         }
         .result-message {
             font-size: 1.5rem; color: #5C7A7A;
@@ -237,17 +211,14 @@
         .btn-restart {
             background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
             color: white; border: 3px solid #8B5A2B;
-            padding: 20px 50px; font-size: 1.5rem; font-weight: 700;
+            padding: 20px 50px; font-size: 1.5rem; font-weight: bold;
             border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(45, 74, 45, 0.4);
-            transition: all 0.3s;
         }
         .btn-restart:hover {
             transform: translateY(-5px) scale(1.05);
-            background: linear-gradient(135deg, #5C7A7A, #2D4A2D);
         }
         .image-error {
-            color: #8B5A2B; font-size: 1.2rem; font-weight: 700;
+            color: #8B5A2B; font-size: 1.2rem; font-weight: bold;
             padding: 20px; text-align: center;
             background: #E8D98C; border-radius: 15px;
             border: 2px solid #8B5A2B;
@@ -270,17 +241,7 @@
             0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
             100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
         }
-        .firework {
-            position: absolute;
-            width: 5px; height: 5px;
-            border-radius: 50%;
-            animation: fireworkExplode 1.5s ease-out forwards;
-        }
-        @keyframes fireworkExplode {
-            0% { transform: scale(1); opacity: 1; box-shadow: 0 0 0 transparent; }
-            50% { opacity: 1; }
-            100% { transform: scale(50); opacity: 0; box-shadow: 0 -50px 0 #7A9E6B, 50px 0 0 #5C7A7A, 0 50px 0 #E8D98C, -50px 0 0 #8B5A2B; }
-        }
+        
         @media (max-width: 968px) {
             .quiz-container { flex-direction: column; }
             .quiz-left { flex: 1; width: 100%; }
@@ -297,9 +258,9 @@
     </div>
 
     <div class="screen-guess" id="screenGuess">
-        <h1 class="guess-title"> Угадай песню! 🎵</h1>
-        <img src="cover.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.outerHTML='<div style=font-size:4rem;margin-bottom:20px;>🦫🌲</div>'">
-        <div class="emoji-puzzle">🪑 + 🦫 + 🪵 + 🥃 + 🎤 + 😌 = ❓</div>
+        <h1 class="guess-title">Угадай песню!</h1>
+        <img src="cover.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.style.display='none'">
+        <div class="emoji-puzzle">🪑 +  + 🪵 + 🥃 +  + 😌 = ❓</div>
         <p class="puzzle-hint">Это не инструкция по выживанию в тайге и не рецепт коктейля... Нажмите на подсказку!</p>
         <button class="btn-hint" id="btnHint" onclick="showOptions()">💡 Подсказка</button>
         <div class="guess-options" id="guessOptions">
@@ -313,7 +274,7 @@
 
     <div class="screen-quiz" id="screenQuiz">
         <div class="quiz-header">
-            <h1 class="quiz-title">🦫 Квиз: Сидим с бобром 🌲</h1>
+            <h1 class="quiz-title">🦫 Квиз: Сидим с бобром</h1>
             <div class="quiz-progress">Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">15</span></div>
         </div>
         <div class="quiz-container">
@@ -332,7 +293,7 @@
     </div>
 
     <div class="screen-result" id="screenResult">
-        <h1 class="result-title">🌲 Результаты 🎉</h1>
+        <h1 class="result-title">🌲 Результаты</h1>
         <div class="result-score"><span id="scoreCorrect">0</span> / <span id="scoreTotal">15</span></div>
         <div class="result-message" id="resultMessage"></div>
         <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
@@ -340,21 +301,22 @@
 
     <div class="celebration" id="celebration"></div>
 
-    <audio id="audio1" preload="none"><source src="1.mp3" type="audio/mpeg"></audio>
-    <audio id="audio2" preload="none"><source src="2.mp3" type="audio/mpeg"></audio>
-    <audio id="audio3" preload="none"><source src="3.mp3" type="audio/mpeg"></audio>
-    <audio id="audio4" preload="none"><source src="4.mp3" type="audio/mpeg"></audio>
-    <audio id="audio7" preload="none"><source src="7.mp3" type="audio/mpeg"></audio>
-    <audio id="audio8" preload="none"><source src="8.mp3" type="audio/mpeg"></audio>
-    <audio id="audio9" preload="none"><source src="9.mp3" type="audio/mpeg"></audio>
-    <audio id="audio14" preload="none"><source src="14.mp3" type="audio/mpeg"></audio>
-    <audio id="audioEnd" preload="none"><source src="end.mp3" type="audio/mpeg"></audio>
+    <audio id="audio1"><source src="1.mp3" type="audio/mpeg"></audio>
+    <audio id="audio2"><source src="2.mp3" type="audio/mpeg"></audio>
+    <audio id="audio3"><source src="3.mp3" type="audio/mpeg"></audio>
+    <audio id="audio4"><source src="4.mp3" type="audio/mpeg"></audio>
+    <audio id="audio7"><source src="7.mp3" type="audio/mpeg"></audio>
+    <audio id="audio8"><source src="8.mp3" type="audio/mpeg"></audio>
+    <audio id="audio9"><source src="9.mp3" type="audio/mpeg"></audio>
+    <audio id="audio14"><source src="14.mp3" type="audio/mpeg"></audio>
+    <audio id="audioEnd"><source src="end.mp3" type="audio/mpeg"></audio>
 
     <script>
-        window.addEventListener('load', () => {
+        // Показываем страницу сразу, без ожидания загрузки
+        window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 document.getElementById('loaderScreen').classList.add('hidden');
-            }, 1000);
+            }, 1500);
         });
 
         const questions = [
@@ -412,10 +374,8 @@
             document.getElementById('questionText').textContent = q.question;
             const btnNext = document.getElementById('btnNext');
             if (currentQuestionIndex === questions.length - 1) {
-                btnNext.classList.remove('visible');
                 btnNext.style.display = 'none';
             } else {
-                btnNext.classList.remove('visible');
                 btnNext.style.display = '';
             }
             const optionsContainer = document.getElementById('optionsContainer');
@@ -445,7 +405,7 @@
                 button.classList.add('correct');
                 correctAnswers++;
                 document.getElementById('answerArea').innerHTML = `
-                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>️ Картинка не загрузилась<br><small>Проверьте файл: ${q.image}</small></div>'">
+                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>Картинка не загрузилась: ${q.image}</div>'">
                 `;
                 if (isLastQuestion) {
                     playEndMusic();
@@ -505,16 +465,6 @@
                     setTimeout(() => confetti.remove(), 4000);
                 }, i * 50);
             }
-            for (let i = 0; i < 3; i++) {
-                setTimeout(() => {
-                    const firework = document.createElement('div');
-                    firework.className = 'firework';
-                    firework.style.left = (Math.random() * 80 + 10) + '%';
-                    firework.style.top = (Math.random() * 40 + 20) + '%';
-                    celebration.appendChild(firework);
-                    setTimeout(() => firework.remove(), 1500);
-                }, i * 500 + 200);
-            }
         }
 
         function showResult() {
@@ -533,8 +483,8 @@
             if (percentage === 100) message = '🌲 Идеально! Ты настоящий бобровед! Бобёр тобой гордится! ✨';
             else if (percentage >= 80) message = '🌟 Отлично! Ты почти так же офигенно, как бобёр!';
             else if (percentage >= 60) message = '👍 Неплохо! Но бобёр ожидает от тебя большего!';
-            else if (percentage >= 40) message = '😅 Ну такое... Пора переслушать песню раз 100! 🎵';
-            else message = '😱 Ой-ой... Бобёр расстроен! Срочно иди слушать песню! 💔';
+            else if (percentage >= 40) message = '😅 Ну такое... Пора переслушать песню раз 100!';
+            else message = '😱 Ой-ой... Бобёр расстроен! Срочно иди слушать песню!';
             document.getElementById('resultMessage').textContent = message;
         }
 
