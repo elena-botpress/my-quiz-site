@@ -3,509 +3,967 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Квиз: Сидим с бобром</title>
+    <title>Бобровая Викторина</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Inter:wght@300;400;600&family=Special+Elite&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #B5C4A8 0%, #E8D98C 50%, #7A9E6B 100%);
-            min-height: 100vh;
-            overflow-x: hidden;
+        :root {
+            --bg-primary: #0a0e1a;
+            --bg-secondary: #151b2d;
+            --accent-gold: #d4af37;
+            --accent-red: #e63946;
+            --accent-green: #2ecc71;
+            --accent-blue: #457b9d;
+            --text-primary: #f1faee;
+            --text-secondary: #a8dadc;
+            --card-bg: rgba(21, 27, 45, 0.9);
         }
-        
-        .loader-screen {
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ===== МУЗЫКАЛЬНЫЙ ПЛЕЕР ===== */
+        .music-player {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: linear-gradient(135deg, #B5C4A8 0%, #E8D98C 100%);
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--accent-gold);
+            border-radius: 50px;
+            padding: 8px 18px;
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .music-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #b8962e 100%);
+            color: var(--bg-primary);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
-            transition: opacity 0.3s;
+            transition: all 0.3s ease;
         }
-        .loader-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
+
+        .music-btn:hover { transform: scale(1.1); }
+        .music-btn.playing { animation: pulse 2s infinite; }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(212, 175, 55, 0.8); }
         }
-        .loader-beaver {
-            font-size: 5rem;
-            animation: bounce 0.8s ease-in-out infinite;
+
+        .music-label {
+            font-family: 'Special Elite', cursive;
+            font-size: 0.75rem;
+            color: var(--accent-gold);
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-15px); }
+
+        .equalizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 18px;
         }
-        .loader-text {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2D4A2D;
-            margin-top: 15px;
+
+        .eq-bar {
+            width: 3px;
+            background: var(--accent-gold);
+            border-radius: 2px;
         }
-        
-        .screen-guess {
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            min-height: 100vh; padding: 40px 20px;
+
+        .eq-bar:nth-child(1) { animation: eq1 0.8s ease-in-out infinite; }
+        .eq-bar:nth-child(2) { animation: eq2 0.6s ease-in-out infinite; }
+        .eq-bar:nth-child(3) { animation: eq3 0.9s ease-in-out infinite; }
+        .eq-bar:nth-child(4) { animation: eq4 0.7s ease-in-out infinite; }
+        .eq-bar:nth-child(5) { animation: eq5 0.85s ease-in-out infinite; }
+
+        @keyframes eq1 { 0%, 100% { height: 4px; } 50% { height: 16px; } }
+        @keyframes eq2 { 0%, 100% { height: 8px; } 50% { height: 5px; } }
+        @keyframes eq3 { 0%, 100% { height: 12px; } 50% { height: 7px; } }
+        @keyframes eq4 { 0%, 100% { height: 6px; } 50% { height: 18px; } }
+        @keyframes eq5 { 0%, 100% { height: 10px; } 50% { height: 4px; } }
+
+        .equalizer.paused .eq-bar {
+            animation-play-state: paused;
+            height: 4px !important;
+        }
+
+        /* ===== ЗАГОЛОВОК ===== */
+        header {
             text-align: center;
+            padding: 30px 20px 20px;
+            border-bottom: 2px solid var(--accent-gold);
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
         }
-        .guess-title {
-            font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: bold; color: #2D4A2D;
-            margin-bottom: 30px; text-transform: uppercase;
-        }
-        .guess-cover {
-            max-width: 700px; width: 100%;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(45, 74, 45, 0.3);
-            margin-bottom: 30px; background: white;
-            padding: 20px; border: 4px solid #8B5A2B;
-        }
-        .emoji-puzzle {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 20px;
-        }
-        .puzzle-hint {
-            font-size: 1.2rem; color: #5C7A7A;
-            margin-bottom: 30px; font-style: italic; max-width: 600px;
-        }
-        .btn-hint {
-            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
-            color: white; border: 3px solid #8B5A2B;
-            padding: 20px 50px; font-size: 1.5rem; font-weight: bold;
-            border-radius: 50px; cursor: pointer;
-            box-shadow: 0 10px 30px rgba(45, 74, 45, 0.4);
-        }
-        .btn-hint:hover {
-            transform: translateY(-5px) scale(1.05);
-        }
-        .guess-options {
-            display: none; flex-direction: column;
-            gap: 15px; max-width: 600px; width: 100%; margin-top: 30px;
-        }
-        .guess-options.visible { display: flex; }
-        .guess-option {
-            background: white; border: 3px solid #7A9E6B;
-            padding: 20px; border-radius: 20px;
-            font-size: 1.2rem; font-weight: bold; color: #2D4A2D;
-            cursor: pointer;
-        }
-        .guess-option:hover {
-            background: #7A9E6B; color: white;
-        }
-        .guess-option.correct {
-            background: #7A9E6B; border-color: #2D4A2D; color: white;
-        }
-        .guess-option.wrong {
-            background: #B5C4A8; border-color: #8B5A2B; color: #8B5A2B;
-        }
-        .guess-option:disabled { cursor: not-allowed; }
-        .success-message {
-            display: none; font-size: 2.5rem; font-weight: bold;
-            color: #2D4A2D; margin-top: 30px;
-        }
-        .success-message.visible { display: block; }
-        
-        .screen-quiz {
-            display: none; min-height: 100vh;
-            padding: 40px 20px;
-        }
-        .quiz-header { text-align: center; margin-bottom: 40px; }
-        .quiz-title {
-            font-size: clamp(2rem, 5vw, 3rem);
-            font-weight: bold; color: #2D4A2D;
-            margin-bottom: 10px;
-        }
-        .quiz-progress {
-            font-size: 1.2rem; color: #5C7A7A; font-weight: bold;
-        }
-        .quiz-container {
-            display: flex; gap: 30px;
-            max-width: 1400px; margin: 0 auto;
-        }
-        .quiz-left {
-            flex: 0 0 40%; background: white;
-            border-radius: 30px; padding: 30px;
-            border: 3px solid #7A9E6B;
-        }
-        .quiz-question {
-            font-size: clamp(1.1rem, 2vw, 1.5rem);
-            font-weight: bold; color: #2D4A2D;
-            margin-bottom: 20px;
-        }
-        .quiz-options { display: flex; flex-direction: column; gap: 12px; }
-        .quiz-option {
-            background: linear-gradient(135deg, #B5C4A8, #E8D98C);
-            border: 3px solid #7A9E6B;
-            padding: 15px 20px; border-radius: 20px;
-            font-size: 1rem; font-weight: bold; color: #2D4A2D;
-            cursor: pointer;
-            text-align: left;
-        }
-        .quiz-option:hover {
-            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
+
+        .badge {
+            display: inline-block;
+            background: var(--accent-red);
             color: white;
-        }
-        .quiz-option.correct {
-            background: linear-gradient(135deg, #7A9E6B, #2D4A2D);
-            border-color: #2D4A2D; color: white;
-        }
-        .quiz-option.wrong {
-            background: linear-gradient(135deg, #E8D98C, #8B5A2B);
-            border-color: #8B5A2B; color: white;
-        }
-        .quiz-option:disabled { cursor: not-allowed; opacity: 0.7; }
-        .quiz-right {
-            flex: 1; background: white;
-            border-radius: 30px; padding: 30px;
-            min-height: 500px;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            border: 3px solid #7A9E6B;
-        }
-        .answer-placeholder {
-            text-align: center; color: #5C7A7A; font-size: 1.2rem;
-        }
-        .answer-image {
-            max-width: 100%; max-height: 600px;
+            padding: 6px 18px;
             border-radius: 20px;
-            border: 4px solid #8B5A2B;
+            font-family: 'Special Elite', cursive;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
         }
-        .emoji-reaction {
-            font-size: 8rem;
+
+        h1 {
+            font-family: 'Crimson Text', serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .btn-next {
-            display: none; margin-top: 20px;
-            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
-            color: white; border: 3px solid #8B5A2B;
-            padding: 15px 40px; font-size: 1.2rem; font-weight: bold;
-            border-radius: 50px; cursor: pointer;
+
+        .subtitle {
+            font-family: 'Special Elite', cursive;
+            color: var(--text-secondary);
+            font-size: 1rem;
         }
-        .btn-next:hover {
-            transform: translateY(-3px) scale(1.05);
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 25px 20px;
         }
-        .btn-next.visible { display: block; }
-        
-        .screen-result {
-            display: none; flex-direction: column;
-            align-items: center; justify-content: center;
-            min-height: 100vh; padding: 40px 20px;
-            text-align: center;
+
+        /* ===== ПРОГРЕСС БАР ===== */
+        .progress-container {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
-        .result-title {
-            font-size: clamp(2rem, 6vw, 4rem);
-            font-weight: bold; color: #2D4A2D;
-            margin-bottom: 20px;
+
+        .progress-text {
+            font-family: 'Special Elite', cursive;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
-        .result-score {
-            font-size: clamp(3rem, 8vw, 6rem);
-            font-weight: bold; color: #7A9E6B;
-            margin-bottom: 20px;
-        }
-        .result-message {
-            font-size: 1.5rem; color: #5C7A7A;
-            margin-bottom: 40px; max-width: 600px;
-        }
-        .btn-restart {
-            background: linear-gradient(135deg, #7A9E6B, #5C7A7A);
-            color: white; border: 3px solid #8B5A2B;
-            padding: 20px 50px; font-size: 1.5rem; font-weight: bold;
-            border-radius: 50px; cursor: pointer;
-        }
-        .btn-restart:hover {
-            transform: translateY(-5px) scale(1.05);
-        }
-        .image-error {
-            color: #8B5A2B; font-size: 1.2rem; font-weight: bold;
-            padding: 20px; text-align: center;
-            background: #E8D98C; border-radius: 15px;
-            border: 2px solid #8B5A2B;
-        }
-        .celebration {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 9998;
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
             overflow: hidden;
         }
-        .confetti {
-            position: absolute;
-            width: 10px; height: 10px;
-            background: #7A9E6B;
-            animation: confettiFall 3s ease-out forwards;
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-green));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+            width: 0%;
         }
-        @keyframes confettiFall {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+
+        /* ===== ВОПРОС ===== */
+        .question-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease;
         }
-        
-        @media (max-width: 968px) {
-            .quiz-container { flex-direction: column; }
-            .quiz-left { flex: 1; width: 100%; }
-            .quiz-right { flex: 1; width: 100%; }
-            .guess-cover { max-width: 100%; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-image-container {
+            width: 100%;
+            max-height: 400px;
+            overflow: hidden;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .question-body {
+            padding: 20px 25px 25px;
+        }
+
+        .question-number {
+            font-family: 'Special Elite', cursive;
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        /* ===== ВАРИАНТЫ ОТВЕТОВ ===== */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            font-size: 1rem;
+            text-align: left;
+            width: 100%;
+        }
+
+        .option-btn:hover:not(.disabled) {
+            border-color: var(--accent-gold);
+            background: rgba(212, 175, 55, 0.1);
+            transform: translateX(5px);
+        }
+
+        .option-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .option-btn.correct {
+            border-color: var(--accent-green);
+            background: rgba(46, 204, 113, 0.15);
+        }
+
+        .option-btn.correct .option-letter {
+            background: var(--accent-green);
+            color: white;
+        }
+
+        .option-btn.wrong {
+            border-color: var(--accent-red);
+            background: rgba(230, 57, 70, 0.15);
+        }
+
+        .option-btn.wrong .option-letter {
+            background: var(--accent-red);
+            color: white;
+        }
+
+        .option-btn.disabled {
+            cursor: default;
+            opacity: 0.7;
+        }
+
+        /* ===== РЕЗУЛЬТАТ ===== */
+        .result-box {
+            display: none;
+            padding: 18px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            animation: slideDown 0.4s ease;
+        }
+
+        .result-box.show { display: block; }
+
+        @keyframes slideDown {
+            from { opacity: 0; max-height: 0; }
+            to { opacity: 1; max-height: 300px; }
+        }
+
+        .result-box.success {
+            background: rgba(46, 204, 113, 0.15);
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .result-box.error {
+            background: rgba(230, 57, 70, 0.15);
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .result-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .result-box.success .result-title { color: var(--accent-green); }
+        .result-box.error .result-title { color: var(--accent-red); }
+
+        .result-explanation {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* ===== КНОПКИ НАВИГАЦИИ ===== */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            gap: 15px;
+        }
+
+        .btn-nav {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #b8962e 100%);
+            color: var(--bg-primary);
+            display: none;
+        }
+
+        .btn-next.visible { display: inline-flex; }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-prev {
+            background: transparent;
+            border: 2px solid var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        .btn-prev:hover {
+            background: var(--text-secondary);
+            color: var(--bg-primary);
+        }
+
+        .score-display {
+            font-family: 'Special Elite', cursive;
+            color: var(--accent-gold);
+            font-size: 1rem;
+        }
+
+        /* ===== ФИНАЛЬНАЯ СТРАНИЦА ===== */
+        .final-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        .final-screen.active { display: block; }
+
+        .final-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .final-title {
+            font-family: 'Crimson Text', serif;
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 15px;
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            margin-bottom: 10px;
+        }
+
+        .final-message {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn-restart {
+            padding: 14px 35px;
+            background: linear-gradient(135deg, var(--accent-gold) 0%, #b8962e 100%);
+            color: var(--bg-primary);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-restart:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5);
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-top: 40px;
+            padding-bottom: 80px;
+        }
+
+        @media (max-width: 768px) {
+            .question-image-container { max-height: 280px; }
+            .question-text { font-size: 1.05rem; }
+            .music-player {
+                bottom: 10px;
+                right: 10px;
+                left: 10px;
+                justify-content: center;
+                padding: 6px 12px;
+            }
+            .music-label { display: none; }
+            .nav-buttons { flex-wrap: wrap; }
+            .score-display { order: -1; width: 100%; text-align: center; margin-bottom: 10px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="loader-screen" id="loaderScreen">
-        <div class="loader-beaver">🦫</div>
-        <div class="loader-text">Бобёр готовится...</div>
+<!-- Фоновая музыка для викторины -->
+<audio id="quizMusic" preload="none">
+    <source src="" type="audio/mpeg">
+</audio>
+
+<!-- Финальная музыка -->
+<audio id="endMusic" preload="none">
+    <source src="end.mp3" type="audio/mpeg">
+</audio>
+
+<!-- Мини-плеер -->
+<div class="music-player" id="miniPlayer">
+    <button class="music-btn" id="playBtn" onclick="toggleMiniMusic()">▶️</button>
+    <div class="equalizer paused" id="equalizer">
+        <div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div>
+    </div>
+    <span class="music-label" id="trackLabel">Саундтрек</span>
+</div>
+
+<header>
+    <div class="badge">🦫 БОБРОВАЯ ВИКТОРИНА</div>
+    <h1>Песня про Бобра</h1>
+    <p class="subtitle">Проверь свои знания о главном мемном хите!</p>
+</header>
+
+<div class="container">
+
+    <!-- Прогресс бар -->
+    <div class="progress-container" id="progressContainer">
+        <span class="progress-text" id="progressText">Вопрос 1 / 15</span>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <span class="score-display" id="liveScore">⭐ 0 баллов</span>
     </div>
 
-    <div class="screen-guess" id="screenGuess">
-        <h1 class="guess-title">Угадай песню!</h1>
-        <img src="cover.png" alt="Сидим с бобром за столом" class="guess-cover" onerror="this.style.display='none'">
-        <div class="emoji-puzzle">🪑 +  + 🪵 + 🥃 +  + 😌 = ❓</div>
-        <p class="puzzle-hint">Это не инструкция по выживанию в тайге и не рецепт коктейля... Нажмите на подсказку!</p>
-        <button class="btn-hint" id="btnHint" onclick="showOptions()">💡 Подсказка</button>
-        <div class="guess-options" id="guessOptions">
-            <button class="guess-option" onclick="checkGuess(this, false)">🌲 «Лесорубы в депрессии»</button>
-            <button class="guess-option" onclick="checkGuess(this, false)">🏕️ «Как я провел лето с грызуном»</button>
-            <button class="guess-option" onclick="checkGuess(this, false)">🎵 «Хиты Алсу для фагота»</button>
-            <button class="guess-option" onclick="checkGuess(this, true)">✅ «Сидим с бобром за столом»</button>
-        </div>
-        <div class="success-message" id="successMessage">✅ Правильно! Переходим к викторине...</div>
+    <!-- Контейнер вопроса -->
+    <div id="quizArea"></div>
+
+    <!-- Финальный экран -->
+    <div class="final-screen" id="finalScreen">
+        <div class="final-icon" id="finalIcon">🏆</div>
+        <h2 class="final-title" id="finalTitle">Викторина завершена!</h2>
+        <div class="final-score" id="finalScore">0 / 15</div>
+        <p class="final-message" id="finalMessage"></p>
+        <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти заново</button>
     </div>
 
-    <div class="screen-quiz" id="screenQuiz">
-        <div class="quiz-header">
-            <h1 class="quiz-title">🦫 Квиз: Сидим с бобром</h1>
-            <div class="quiz-progress">Вопрос <span id="currentQuestion">1</span> из <span id="totalQuestions">15</span></div>
-        </div>
-        <div class="quiz-container">
-            <div class="quiz-left">
-                <div class="quiz-question" id="questionText"></div>
-                <div class="quiz-options" id="optionsContainer"></div>
-                <button class="btn-next" id="btnNext" onclick="nextQuestion()">Следующий вопрос →</button>
+</div>
+
+<footer>
+    <p style="font-family: 'Special Elite', cursive; margin-bottom: 5px;">🦫 БОБРОВАЯ ВИКТОРИНА © 2026</p>
+    <p>Ни один бобр не пострадал при создании этой викторины.</p>
+</footer>
+
+<script>
+// ===========================
+// ДАННЫЕ ВИКТОРИНЫ
+// ===========================
+const quizData = [
+    {
+        question: "Где именно находятся лирический герой и бобёр в самом начале песни?",
+        image: "q01-table.png",
+        audio: null,
+        options: ["В бобровой хатке с видом на реку", "На пне в глухом лесу", "За столом", "В баре «У дяди Бобра»"],
+        correct: 2,
+        explanation: "Герой и бобёр сидят за столом — это завязка всей истории."
+    },
+    {
+        question: "Что они готовят вдвоём на ужин?",
+        image: "q02-log.png",
+        audio: "2.mp3",
+        options: ["Суши из коры и мха", "Полено", "Борщ с бобровым хвостом", "Пасту карбонара (без глютена)"],
+        correct: 1,
+        explanation: "Конечно же полено! Что ещё готовить бобру?"
+    },
+    {
+        question: "О чём лирический герой предлагает поговорить бобру?",
+        image: "q03-conversation.png",
+        audio: "3.mp3",
+        options: ["О курсе криптовалют и биткоине", "О том, что наболело", "О глобальном потеплении и экологии", "О новых правилах парковки во дворе"],
+        correct: 1,
+        explanation: "«Давай поговорим о том, что наболело» — классика душевных разговоров."
+    },
+    {
+        question: "Какой главный философский вопрос герой задаёт бобру?",
+        image: "q04-dam.png",
+        audio: "4.mp3",
+        options: ["«Скажи, зачем же между нами плотина?»", "«Кто подставил кролика Роджера?»", "«Быть или не быть, вот в чём вопрос»", "«Где взять деньги на ипотеку?»"],
+        correct: 0,
+        explanation: "Плотина — центральная метафора песни. Зачем она между ними?"
+    },
+    {
+        question: "Какое ещё препятствие, кроме плотины, упоминается между ними в песне?",
+        image: "q05-cliff.png",
+        audio: null,
+        options: ["Высокий забор из профнастила", "Обрыв", "Очередь в поликлинику", "Стена из взаимного непонимания"],
+        correct: 1,
+        explanation: "Обрыв — второе преграда на пути дружбы героя и бобра."
+    },
+    {
+        question: "Какое удивительное свойство бобров с восторгом отмечает лирический герой?",
+        image: "q06-kind.png",
+        audio: null,
+        options: ["Они умеют летать на небольших расстояниях", "Они так добры", "Они знают язык программирования Python", "Они официально не платят налоги"],
+        correct: 1,
+        explanation: "«Бобры такие добрые!» — эмоциональный пик песни."
+    },
+    {
+        question: "Чем, помимо готовки полена, занимаются герой и бобёр вместе?",
+        image: "q07-singing.png",
+        audio: "7.mp3",
+        options: ["Играют в шахматы на время", "Поют с бобром хиты Алсу", "Строят атомную электростанцию", "Смотрят сериал «Слово пацана»"],
+        correct: 1,
+        explanation: "Хиты Алсу — обязательная программа любого вечера с бобром!"
+    },
+    {
+        question: "Какое чувство испытывает лирический герой, находясь рядом с бобром?",
+        image: "q08-hug.png",
+        audio: "8.mp3",
+        options: ["Ему так офигенно", "Лёгкая ностальгическая грусть", "Экзистенциальный ужас", "Сильное желание спать"],
+        correct: 0,
+        explanation: "«Мне так офигенно» — главная эмоция песни. Чистый кайф от дружбы с бобром."
+    },
+    {
+        question: "Какие напитки упоминаются в одной из версий текста, когда они сидят за столом?",
+        image: "q09-drinks.png",
+        audio: "9.mp3",
+        options: ["Чай с малиной и мёдом", "Текила и ром", "Квас «Очаковский»", "Смузи из хвои и шишек"],
+        correct: 1,
+        explanation: "Текила и ром — напиток настоящих друзей. Даже если один из них бобр."
+    },
+    {
+        question: "Как лучше всего охарактеризовать музыкальный жанр этого шедевра?",
+        image: "q10-music.png",
+        audio: null,
+        options: ["Симфоническая опера в трёх актах", "Норвежский блэк-метал", "Мемный поп-хит / лирический шансон", "Японский традиционный фольклор"],
+        correct: 2,
+        explanation: "Это мемный поп-хит с элементами лирического шансона. Единственный правильный ответ."
+    },
+    {
+        question: "Если бы бобёр реально ответил на вопрос «зачем между нами плотина?», что бы он сказал с точки зрения биологии?",
+        image: "q11-building.png",
+        audio: null,
+        options: ["Чтобы создать запруду и защитить свою хатку от хищников", "Потому что он тайно ненавидит лирического героя", "Это его новый арт-объект для выставки современного искусства", "Он просто потерял ключи от калитки"],
+        correct: 0,
+        explanation: "Биологически: плотина создаёт запруду для защиты хатки. Но поэтически — это стена между душами."
+    },
+    {
+        question: "Какое животное является главной музой и соведущим этой песни?",
+        image: "q12-portrait.png",
+        audio: null,
+        options: ["Выдра", "Бобёр", "Енот-полоскун", "Капибара"],
+        correct: 1,
+        explanation: "Ну конечно бобёр! Название песни говорит само за себя 🦫"
+    },
+    {
+        question: "Чего лирический герой ТОЧНО НЕ делает с бобром в этой песне?",
+        image: "q13-mortgage.png",
+        audio: null,
+        options: ["Не готовит полено", "Не разговаривает о наболевшем", "Не оформляет совместную ипотеку на хатку", "Не поёт хиты Алсу"],
+        correct: 2,
+        explanation: "Ипотеку на хатку никто не оформлял. Хотя идея хорошая..."
+    },
+    {
+        question: "Какая фраза из песни лучше всего описывает уровень доверия между героем и бобром?",
+        image: "q14-trust.png",
+        audio: "14.mp3",
+        options: ["«Скажи мне честно, бобёр»", "«Дай в долг до пятницы, бобёр»", "«Не верь, не бойся, не проси, бобёр»", "«Ты кто такой? Давай, до свидания!»"],
+        correct: 0,
+        explanation: "«Скажи мне честно, бобёр» — максимальный уровень доверия в мире людей и грызунов."
+    },
+    {
+        question: "Какой главный жизненный вывод можно сделать, прослушав эту песню?",
+        image: "q15-cinema.png",
+        audio: null,
+        options: ["Бобры – это опасные хищники, держитесь от них подальше", "Дружба с бобром – это офигенно", "Нужно срочно идти и строить плотину", "Полено – это новый чёрный"],
+        correct: 1,
+        explanation: "Главный вывод прост: дружба с бобром — это офигенно! 💛"
+    }
+];
+
+// Карта аудио для каждого вопроса
+const audioMap = {
+    0: null,      // q01 — нет аудио
+    1: "2.mp3",   // q02
+    2: "3.mp3",   // q03
+    3: "4.mp3",   // q04
+    4: null,      // q05
+    5: null,      // q06
+    6: "7.mp3",   // q07
+    7: "8.mp3",   // q08
+    8: "9.mp3",   // q09
+    9: null,      // q10
+    10: null,     // q11
+    11: null,     // q12
+    12: null,     // q13
+    13: "14.mp3", // q14
+    14: null      // q15
+};
+
+let currentQuestion = 0;
+let score = 0;
+let answered = new Array(quizData.length).fill(false);
+let selectedAnswers = new Array(quizData.length).fill(null);
+let miniIsPlaying = false;
+let endMusicStarted = false;
+
+const letters = ['А', 'Б', 'В', 'Г'];
+
+// ===========================
+// МИНИ-ПЛЕЕР (переключение треков)
+// ===========================
+function toggleMiniMusic() {
+    const btn = document.getElementById('playBtn');
+    const eq = document.getElementById('equalizer');
+    const label = document.getElementById('trackLabel');
+
+    if (miniIsPlaying) {
+        stopAllAudio();
+        btn.textContent = '▶️';
+        btn.classList.remove('playing');
+        eq.classList.add('paused');
+        miniIsPlaying = false;
+    } else {
+        playCurrentTrack();
+        btn.textContent = '⏸️';
+        btn.classList.add('playing');
+        eq.classList.remove('paused');
+        miniIsPlaying = true;
+    }
+}
+
+function playCurrentTrack() {
+    const item = quizData[currentQuestion];
+    if (item.audio) {
+        const quizMusic = document.getElementById('quizMusic');
+        quizMusic.src = item.audio;
+        quizMusic.volume = 0.4;
+        quizMusic.loop = false;
+        quizMusic.play().catch(() => {});
+        document.getElementById('trackLabel').textContent = '🎧 ' + item.audio;
+    }
+}
+
+function stopAllAudio() {
+    document.getElementById('quizMusic').pause();
+    document.getElementById('quizMusic').currentTime = 0;
+}
+
+function updateMiniPlayerForQuestion(qIndex) {
+    const item = quizData[qIndex];
+    const btn = document.getElementById('playBtn');
+    const eq = document.getElementById('equalizer');
+    const label = document.getElementById('trackLabel');
+
+    // Останавливаем предыдущий трек
+    stopAllAudio();
+
+    if (item.audio) {
+        btn.style.display = 'flex';
+        label.textContent = '🎧 Нажми ▶ для звука';
+        if (miniIsPlaying) {
+            playCurrentTrack();
+            btn.textContent = '⏸️';
+            btn.classList.add('playing');
+            eq.classList.remove('paused');
+        } else {
+            btn.textContent = '▶️';
+            btn.classList.remove('playing');
+            eq.classList.add('paused');
+        }
+    } else {
+        btn.style.display = 'none';
+        label.textContent = '';
+        miniIsPlaying = false;
+    }
+}
+
+// ===========================
+// ОТРИСОВКА ВОПРОСА
+// ===========================
+function renderQuestion(index) {
+    const data = quizData[index];
+    const area = document.getElementById('quizArea');
+
+    let optionsHTML = '';
+    data.options.forEach((opt, i) => {
+        let extraClass = '';
+        if (answered[index]) {
+            if (i === data.correct) extraClass = 'correct disabled';
+            else if (selectedAnswers[index] === i && i !== data.correct) extraClass = 'wrong disabled';
+            else extraClass = 'disabled';
+        }
+        optionsHTML += `
+            <button class="option-btn ${extraClass}" 
+                    onclick="selectAnswer(${index}, ${i})" 
+                    ${answered[index] ? 'disabled' : ''}>
+                <span class="option-letter">${letters[i]}</span>
+                <span>${opt}</span>
+            </button>`;
+    });
+
+    let resultHTML = '';
+    if (answered[index]) {
+        const isCorrect = selectedAnswers[index] === data.correct;
+        resultHTML = `
+            <div class="result-box show ${isCorrect ? 'success' : 'error'}">
+                <div class="result-title">${isCorrect ? '✅ Правильно!' : '❌ Неправильно!'}</div>
+                <div class="result-explanation">${data.explanation}</div>
+            </div>`;
+    }
+
+    const nextVisible = answered[index] ? 'visible' : '';
+    const prevDisabled = index === 0 ? 'style="visibility:hidden"' : '';
+    const isLast = index === quizData.length - 1;
+    const nextLabel = isLast ? '🏁 Завершить' : '➡️ Далее';
+
+    area.innerHTML = `
+        <div class="question-card">
+            <div class="question-image-container">
+                <img src="${data.image}" alt="Вопрос ${index + 1}" class="question-image" loading="lazy" 
+                     onerror="this.parentElement.innerHTML='<div style=&quot;padding:40px;color:#aaa;font-style:italic;&quot;>🖼️ Изображение недоступно</div>'">
             </div>
-            <div class="quiz-right" id="answerArea">
-                <div class="answer-placeholder">
-                    <div style="font-size: 4rem; margin-bottom: 20px;">🌲</div>
-                    <div>Здесь появится ответ!</div>
+            <div class="question-body">
+                <div class="question-number">ВОПРОС ${index + 1} ИЗ ${quizData.length}</div>
+                <div class="question-text">${data.question}</div>
+                <div class="options-list">${optionsHTML}</div>
+                ${resultHTML}
+                <div class="nav-buttons">
+                    <button class="btn-nav btn-prev" onclick="prevQuestion()" ${prevDisabled}>← Назад</button>
+                    <span class="score-display">⭐ ${score} баллов</span>
+                    <button class="btn-nav btn-next ${nextVisible}" onclick="nextQuestion()">${nextLabel}</button>
                 </div>
             </div>
-        </div>
-    </div>
+        </div>`;
 
-    <div class="screen-result" id="screenResult">
-        <h1 class="result-title">🌲 Результаты</h1>
-        <div class="result-score"><span id="scoreCorrect">0</span> / <span id="scoreTotal">15</span></div>
-        <div class="result-message" id="resultMessage"></div>
-        <button class="btn-restart" onclick="restartQuiz()">🔄 Пройти ещё раз</button>
-    </div>
+    // Обновляем прогресс
+    document.getElementById('progressText').textContent = `Вопрос ${index + 1} / ${quizData.length}`;
+    document.getElementById('progressFill').style.width = ((index + 1) / quizData.length * 100) + '%';
+    document.getElementById('liveScore').textContent = `⭐ ${score} баллов`;
 
-    <div class="celebration" id="celebration"></div>
+    // Обновляем мини-плеер
+    updateMiniPlayerForQuestion(index);
+}
 
-    <audio id="audio1"><source src="1.mp3" type="audio/mpeg"></audio>
-    <audio id="audio2"><source src="2.mp3" type="audio/mpeg"></audio>
-    <audio id="audio3"><source src="3.mp3" type="audio/mpeg"></audio>
-    <audio id="audio4"><source src="4.mp3" type="audio/mpeg"></audio>
-    <audio id="audio7"><source src="7.mp3" type="audio/mpeg"></audio>
-    <audio id="audio8"><source src="8.mp3" type="audio/mpeg"></audio>
-    <audio id="audio9"><source src="9.mp3" type="audio/mpeg"></audio>
-    <audio id="audio14"><source src="14.mp3" type="audio/mpeg"></audio>
-    <audio id="audioEnd"><source src="end.mp3" type="audio/mpeg"></audio>
+// ===========================
+// ЛОГИКА ОТВЕТОВ
+// ===========================
+function selectAnswer(qIndex, optIndex) {
+    if (answered[qIndex]) return;
 
-    <script>
-        // Показываем страницу сразу, без ожидания загрузки
-        window.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('loaderScreen').classList.add('hidden');
-            }, 1500);
-        });
+    answered[qIndex] = true;
+    selectedAnswers[qIndex] = optIndex;
 
-        const questions = [
-            { question: "Где именно находятся лирический герой и бобёр в самом начале песни?", options: ["В бобровой хатке с видом на реку", "На пне в глухом лесу", "За столом", "В баре «У дяди Бобра»"], correct: 2, image: "q01-table.png", audio: "audio1" },
-            { question: "Что они готовят вдвоём на ужин?", options: ["Суши из коры и мха", "Полено", "Борщ с бобровым хвостом", "Пасту карбонара (без глютена)"], correct: 1, image: "q02-log.png", audio: "audio2" },
-            { question: "О чём лирический герой предлагает поговорить бобру?", options: ["О курсе криптовалют и биткоине", "О том, что наболело", "О глобальном потеплении и экологии", "О новых правилах парковки во дворе"], correct: 1, image: "q03-conversation.png", audio: "audio3" },
-            { question: "Какой главный философский вопрос герой задаёт бобру?", options: ["«Скажи, зачем же между нами плотина?»", "«Кто подставил кролика Роджера?»", "«Быть или не быть, вот в чём вопрос»", "«Где взять деньги на ипотеку?»"], correct: 0, image: "q04-dam.png", audio: "audio4" },
-            { question: "Какое ещё препятствие, кроме плотины, упоминается между ними в песне?", options: ["Высокий забор из профнастила", "Обрыв", "Очередь в поликлинику", "Стена из взаимного непонимания"], correct: 1, image: "q05-cliff.png", audio: null },
-            { question: "Какое удивительное свойство бобров с восторгом отмечает лирический герой?", options: ["Они умеют летать на небольших расстояниях", "Они так добры", "Они знают язык программирования Python", "Они официально не платят налоги"], correct: 1, image: "q06-kind.png", audio: null },
-            { question: "Чем, помимо готовки полена, занимаются герой и бобёр вместе?", options: ["Играют в шахматы на время", "Поют с бобром хиты Алсу", "Строят атомную электростанцию", "Смотрят сериал «Слово пацана»"], correct: 1, image: "q07-singing.png", audio: "audio7" },
-            { question: "Какое чувство испытывает лирический герой, находясь рядом с бобром?", options: ["Ему так офигенно", "Лёгкая ностальгическая грусть", "Экзистенциальный ужас", "Сильное желание спать"], correct: 0, image: "q08-hug.png", audio: "audio8" },
-            { question: "Какие напитки упоминаются в одной из версий текста, когда они сидят за столом?", options: ["Чай с малиной и мёдом", "Текила и ром", "Квас «Очаковский»", "Смузи из хвои и шишек"], correct: 1, image: "q09-drinks.png", audio: "audio9" },
-            { question: "Как лучше всего охарактеризовать музыкальный жанр этого шедевра?", options: ["Симфоническая опера в трёх актах", "Норвежский блэк-метал", "Мемный поп-хит / лирический шансон", "Японский традиционный фольклор"], correct: 2, image: "q10-music.png", audio: null },
-            { question: "Если бы бобёр реально ответил на вопрос «зачем между нами плотина?», что бы он сказал с точки зрения биологии?", options: ["Чтобы создать запруду и защитить свою хатку от хищников", "Потому что он тайно ненавидит лирического героя", "Это его новый арт-объект для выставки современного искусства", "Он просто потерял ключи от калитки"], correct: 0, image: "q11-building.png", audio: null },
-            { question: "Какое животное является главной музой и соведущим этой песни?", options: ["Выдра", "Бобёр", "Енот-полоскун", "Капибара"], correct: 1, image: "q12-portrait.png", audio: null },
-            { question: "Чего лирический герой ТОЧНО НЕ делает с бобром в этой песне?", options: ["Не готовит полено", "Не разговаривает о наболевшем", "Не оформляет совместную ипотеку на хатку", "Не поёт хиты Алсу"], correct: 2, image: "q13-mortgage.png", audio: null },
-            { question: "Какая фраза из песни лучше всего описывает уровень доверия между героем и бобром?", options: ["«Скажи мне честно, бобёр»", "«Дай в долг до пятницы, бобёр»", "«Не верь, не бойся, не проси, бобёр»", "«Ты кто такой? Давай, до свидания!»"], correct: 0, image: "q14-trust.png", audio: "audio14" },
-            { question: "Какой главный жизненный вывод можно сделать, прослушав эту песню?", options: ["Бобры – это опасные хищники, держитесь от них подальше", "Дружба с бобром – это офигенно", "Нужно срочно идти и строить плотину", "Полено – это новый чёрный"], correct: 1, image: "q15-cinema.png", audio: null }
-        ];
+    if (optIndex === quizData[qIndex].correct) {
+        score++;
+    }
 
-        let currentQuestionIndex = 0;
-        let correctAnswers = 0;
-        const emojiReactions = ['😡', '😞', '😂', '😢', '😭', '🤕', '😅', '🙈', '😿', '💔'];
+    renderQuestion(qIndex);
+}
 
-        function showOptions() {
-            document.getElementById('guessOptions').classList.add('visible');
-            document.getElementById('btnHint').style.display = 'none';
-        }
+function nextQuestion() {
+    if (!answered[currentQuestion]) return;
 
-        function checkGuess(button, isCorrect) {
-            const allButtons = document.querySelectorAll('.guess-option');
-            allButtons.forEach(btn => btn.disabled = true);
-            if (isCorrect) {
-                button.classList.add('correct');
-                document.getElementById('successMessage').classList.add('visible');
-                setTimeout(() => { startQuiz(); }, 2000);
-            } else {
-                button.classList.add('wrong');
-                setTimeout(() => {
-                    allButtons.forEach(btn => { btn.disabled = false; btn.classList.remove('wrong'); });
-                }, 1000);
-            }
-        }
+    if (currentQuestion < quizData.length - 1) {
+        currentQuestion++;
+        renderQuestion(currentQuestion);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        showFinalScreen();
+    }
+}
 
-        function startQuiz() {
-            document.getElementById('screenGuess').style.display = 'none';
-            document.getElementById('screenQuiz').style.display = 'block';
-            document.getElementById('totalQuestions').textContent = questions.length;
-            showQuestion();
-        }
+function prevQuestion() {
+    if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion(currentQuestion);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
 
-        function showQuestion() {
-            const q = questions[currentQuestionIndex];
-            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
-            document.getElementById('questionText').textContent = q.question;
-            const btnNext = document.getElementById('btnNext');
-            if (currentQuestionIndex === questions.length - 1) {
-                btnNext.style.display = 'none';
-            } else {
-                btnNext.style.display = '';
-            }
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-            q.options.forEach((option, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'quiz-option';
-                btn.textContent = option;
-                btn.onclick = () => checkAnswer(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-            document.getElementById('answerArea').innerHTML = `
-                <div class="answer-placeholder">
-                    <div style="font-size: 4rem; margin-bottom: 20px;">🌲</div>
-                    <div>Здесь появится ответ!</div>
-                </div>
-            `;
-        }
+// ===========================
+// ФИНАЛЬНЫЙ ЭКРАН
+// ===========================
+function showFinalScreen() {
+    stopAllAudio();
+    document.getElementById('quizArea').innerHTML = '';
+    document.getElementById('progressContainer').style.display = 'none';
+    document.getElementById('finalScreen').classList.add('active');
 
-        function checkAnswer(selectedIndex, button) {
-            const q = questions[currentQuestionIndex];
-            const allButtons = document.querySelectorAll('.quiz-option');
-            allButtons.forEach(btn => btn.disabled = true);
-            const isLastQuestion = (currentQuestionIndex === questions.length - 1);
-            
-            if (selectedIndex === q.correct) {
-                button.classList.add('correct');
-                correctAnswers++;
-                document.getElementById('answerArea').innerHTML = `
-                    <img src="${q.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div class=image-error>Картинка не загрузилась: ${q.image}</div>'">
-                `;
-                if (isLastQuestion) {
-                    playEndMusic();
-                    setTimeout(() => showResult(), 4000);
-                } else if (q.audio) {
-                    const audio = document.getElementById(q.audio);
-                    if (audio) {
-                        audio.currentTime = 0;
-                        audio.play().catch(e => console.log('Аудио:', e));
+    const pct = Math.round(score / quizData.length * 100);
+    document.getElementById('finalScore').textContent = `${score} / ${quizData.length}`;
+
+    let icon, title, message;
+    if (pct >= 90) {
+        icon = '👑'; title = 'Легенда бобровой дружбы!';
+        message = 'Вы знаете эту песню наизусть. Бобр гордится вами!';
+    } else if (pct >= 70) {
+        icon = '🦫'; title = 'Отличный результат!';
+        message = 'Вы почти настоящий друг бобра. Ещё чуть-чуть практики!';
+    } else if (pct >= 50) {
+        icon = '🤔'; title = 'Неплохо, но есть куда расти';
+        message = 'Переслушайте песню и попробуйте снова. Бобр ждёт вас!';
+    } else {
+        icon = '😅'; title = 'Бобр немного расстроен...';
+        message = 'Включайте песню заново и возвращайтесь. Мы верим в вас!';
+    }
+
+    document.getElementById('finalIcon').textContent = icon;
+    document.getElementById('finalTitle').textContent = title;
+    document.getElementById('finalMessage').textContent = message;
+
+    // Автоматически включаем финальную музыку
+    if (!endMusicStarted) {
+        endMusicStarted = true;
+        setTimeout(() => {
+            const endAudio = document.getElementById('endMusic');
+            endAudio.volume = 0.5;
+            endAudio.loop = true;
+            endAudio.play().then(() => {
+                const btn = document.getElementById('playBtn');
+                const eq = document.getElementById('equalizer');
+                const label = document.getElementById('trackLabel');
+                btn.style.display = 'flex';
+                btn.textContent = '⏸️';
+                btn.classList.add('playing');
+                eq.classList.remove('paused');
+                label.textContent = '🎬 Финальные титры';
+                miniIsPlaying = true;
+
+                // При клике на кнопку останавливаем/возобновляем end.mp3
+                btn.onclick = () => {
+                    if (endAudio.paused) {
+                        endAudio.play();
+                        btn.textContent = '⏸️';
+                        btn.classList.add('playing');
+                        eq.classList.remove('paused');
+                        miniIsPlaying = true;
+                    } else {
+                        endAudio.pause();
+                        btn.textContent = '▶️';
+                        btn.classList.remove('playing');
+                        eq.classList.add('paused');
+                        miniIsPlaying = false;
                     }
-                    document.getElementById('btnNext').classList.add('visible');
-                } else {
-                    document.getElementById('btnNext').classList.add('visible');
-                }
-            } else {
-                button.classList.add('wrong');
-                allButtons[q.correct].classList.add('correct');
-                const randomEmoji = emojiReactions[Math.floor(Math.random() * emojiReactions.length)];
-                document.getElementById('answerArea').innerHTML = `<div class="emoji-reaction">${randomEmoji}</div>`;
-                if (isLastQuestion) {
-                    playEndMusic();
-                    setTimeout(() => showResult(), 4000);
-                } else {
-                    document.getElementById('btnNext').classList.add('visible');
-                }
-            }
-        }
-
-        function playEndMusic() {
-            const endAudio = document.getElementById('audioEnd');
-            if (endAudio) {
-                endAudio.currentTime = 0;
-                endAudio.play().catch(e => console.log('Финальная музыка:', e));
-            }
-        }
-
-        function nextQuestion() {
-            currentQuestionIndex++;
-            if (currentQuestionIndex < questions.length) {
-                showQuestion();
-            } else {
-                showResult();
-            }
-        }
-
-        function createCelebration() {
-            const celebration = document.getElementById('celebration');
-            const colors = ['#7A9E6B', '#5C7A7A', '#E8D98C', '#8B5A2B', '#2D4A2D'];
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
-                    celebration.appendChild(confetti);
-                    setTimeout(() => confetti.remove(), 4000);
-                }, i * 50);
-            }
-        }
-
-        function showResult() {
-            document.getElementById('screenQuiz').style.display = 'none';
-            document.getElementById('screenResult').style.display = 'flex';
-            document.getElementById('scoreCorrect').textContent = correctAnswers;
-            document.getElementById('scoreTotal').textContent = questions.length;
-            createCelebration();
-            const endAudio = document.getElementById('audioEnd');
-            if (endAudio) {
-                endAudio.currentTime = 0;
-                endAudio.play().catch(e => console.log('Финальная музыка:', e));
-            }
-            let message = '';
-            const percentage = (correctAnswers / questions.length) * 100;
-            if (percentage === 100) message = '🌲 Идеально! Ты настоящий бобровед! Бобёр тобой гордится! ✨';
-            else if (percentage >= 80) message = '🌟 Отлично! Ты почти так же офигенно, как бобёр!';
-            else if (percentage >= 60) message = '👍 Неплохо! Но бобёр ожидает от тебя большего!';
-            else if (percentage >= 40) message = '😅 Ну такое... Пора переслушать песню раз 100!';
-            else message = '😱 Ой-ой... Бобёр расстроен! Срочно иди слушать песню!';
-            document.getElementById('resultMessage').textContent = message;
-        }
-
-        function restartQuiz() {
-            currentQuestionIndex = 0;
-            correctAnswers = 0;
-            document.getElementById('screenResult').style.display = 'none';
-            document.getElementById('screenGuess').style.display = 'flex';
-            document.getElementById('guessOptions').classList.remove('visible');
-            document.getElementById('btnHint').style.display = 'block';
-            document.getElementById('successMessage').classList.remove('visible');
-            document.querySelectorAll('.guess-option').forEach(btn => {
-                btn.disabled = false;
-                btn.classList.remove('correct', 'wrong');
+                };
+            }).catch(() => {
+                console.log('End music autoplay blocked by browser');
             });
-            const endAudio = document.getElementById('audioEnd');
-            if (endAudio) {
-                endAudio.pause();
-                endAudio.currentTime = 0;
-            }
-        }
-    </script>
+        }, 1000);
+    }
+}
+
+function restartQuiz() {
+    currentQuestion = 0;
+    score = 0;
+    answered.fill(false);
+    selectedAnswers.fill(null);
+    endMusicStarted = false;
+
+    stopAllAudio();
+    const endAudio = document.getElementById('endMusic');
+    endAudio.pause();
+    endAudio.currentTime = 0;
+
+    document.getElementById('finalScreen').classList.remove('active');
+    document.getElementById('progressContainer').style.display = 'flex';
+
+    const btn = document.getElementById('playBtn');
+    btn.onclick = toggleMiniMusic;
+
+    renderQuestion(0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===========================
+// СТАРТ
+// ===========================
+renderQuestion(0);
+</script>
+
 </body>
 </html>
