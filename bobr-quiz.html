@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎵 Угадай мелодию!</title>
+    <title>🎵 Угадай мелодию: Бобер Edition</title>
     <style>
-        /* --- СТИЛИ (Дизайн) --- */
+        /* --- СТИЛИ (Лесной/Акварельный дизайн) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
@@ -16,141 +16,46 @@
             color: #2D4A2D;
         }
 
-        /* Экран приветствия */
-        .screen-intro { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            padding: 20px; 
-            text-align: center; 
-        }
-        
-        .intro-title { 
-            font-size: clamp(2rem, 5vw, 3.5rem); 
-            font-weight: 900; 
-            margin-bottom: 20px; 
-            text-shadow: 2px 2px 0px rgba(255,255,255,0.5); 
-        }
-        
-        .intro-cover { 
-            max-width: 400px; 
-            width: 90%; 
-            border-radius: 20px; 
-            box-shadow: 0 15px 40px rgba(45,74,45,0.3); 
-            margin-bottom: 30px; 
-            border: 5px solid #fff; 
-            background: white;
-        }
-
-        .btn-start { 
-            background: #2D4A2D; 
-            color: #fff; 
-            border: none; 
-            padding: 15px 50px; 
-            font-size: 1.5rem; 
-            border-radius: 50px; 
-            cursor: pointer; 
-            transition: transform 0.2s, background 0.2s; 
-            box-shadow: 0 5px 15px rgba(45,74,45,0.4); 
-            font-weight: bold;
-        }
+        .screen-intro { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; text-align: center; }
+        .intro-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 20px; text-shadow: 2px 2px 0px rgba(255,255,255,0.5); }
+        .intro-cover { max-width: 400px; width: 90%; border-radius: 20px; box-shadow: 0 15px 40px rgba(45,74,45,0.3); margin-bottom: 30px; border: 5px solid #fff; background: white; }
+        .btn-start { background: #2D4A2D; color: #fff; border: none; padding: 15px 50px; font-size: 1.5rem; border-radius: 50px; cursor: pointer; transition: transform 0.2s; box-shadow: 0 5px 15px rgba(45,74,45,0.4); font-weight: bold; }
         .btn-start:hover { transform: scale(1.05); background: #3e633e; }
 
-        /* Экран викторины */
-        .screen-quiz { 
-            display: none; 
-            min-height: 100vh; 
-            padding: 20px; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-        }
-        
+        .screen-quiz { display: none; min-height: 100vh; padding: 20px; flex-direction: column; align-items: center; justify-content: center; }
         .quiz-header { text-align: center; margin-bottom: 20px; color: #2D4A2D; font-weight: bold; font-size: 1.2rem; }
         
-        .player-card { 
-            background: #fff; 
-            padding: 30px; 
-            border-radius: 30px; 
-            width: 100%; 
-            max-width: 600px; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
-            text-align: center; 
-            margin-bottom: 20px; 
-            border: 4px solid #7A9E6B; 
-        }
+        .quiz-container { display: flex; gap: 30px; max-width: 1200px; width: 100%; align-items: stretch; }
         
-        .audio-btn { 
-            background: linear-gradient(45deg, #ff2a6d, #bc13fe); 
-            color: white; 
-            border: none; 
-            width: 80px; 
-            height: 80px; 
-            border-radius: 50%; 
-            font-size: 2rem; 
-            cursor: pointer; 
-            margin-bottom: 20px; 
-            box-shadow: 0 5px 20px rgba(188,19,254,0.4); 
-            display: inline-flex; 
-            align-items: center; 
-            justify-content: center; 
-            transition: transform 0.1s;
-        }
+        .player-card { background: #fff; padding: 30px; border-radius: 30px; flex: 1; box-shadow: 0 10px 40px rgba(0,0,0,0.1); text-align: center; border: 4px solid #7A9E6B; }
+        .audio-btn { background: linear-gradient(45deg, #ff2a6d, #bc13fe); color: white; border: none; width: 80px; height: 80px; border-radius: 50%; font-size: 2rem; cursor: pointer; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(188,19,254,0.4); display: inline-flex; align-items: center; justify-content: center; transition: transform 0.1s; }
         .audio-btn:active { transform: scale(0.95); }
         
         .question-text { font-size: 1.3rem; color: #555; margin-bottom: 25px; font-weight: bold; }
-        
         .options-grid { display: grid; gap: 12px; width: 100%; }
         
-        .option-btn { 
-            background: #f0f4f8; 
-            border: 2px solid #B5C4A8; 
-            padding: 15px; 
-            border-radius: 15px; 
-            font-size: 1.1rem; 
-            cursor: pointer; 
-            transition: all 0.2s; 
-            color: #2D4A2D; 
-            font-weight: bold; 
-            text-align: left;
-        }
+        .option-btn { background: #f0f4f8; border: 2px solid #B5C4A8; padding: 15px; border-radius: 15px; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; color: #2D4A2D; font-weight: bold; text-align: left; }
         .option-btn:hover:not(:disabled) { background: #E8D98C; border-color: #8B5A2B; transform: translateX(5px); }
-        
         .option-btn.correct { background: #7A9E6B !important; color: white !important; border-color: #2D4A2D !important; }
         .option-btn.wrong { background: #ffcccc !important; color: #a00 !important; border-color: #ffaaaa !important; }
         .option-btn:disabled { cursor: default; opacity: 0.9; }
 
-        .btn-next { 
-            margin-top: 20px; 
-            background: #2D4A2D; 
-            color: white; 
-            border: none; 
-            padding: 12px 40px; 
-            border-radius: 25px; 
-            font-size: 1.2rem; 
-            cursor: pointer; 
-            display: none; 
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        .answer-panel { flex: 1; background: #fff; border-radius: 30px; padding: 30px; box-shadow: 0 10px 40px rgba(0,0,0,0.1); border: 4px solid #7A9E6B; display: flex; align-items: center; justify-content: center; min-height: 400px; }
+        .answer-image { max-width: 100%; max-height: 400px; border-radius: 20px; animation: fadeIn 0.5s; object-fit: contain; border: 4px solid #8B5A2B; }
+        .answer-placeholder { text-align: center; color: #5C7A7A; font-size: 1.2rem; }
+
+        .btn-next { margin-top: 20px; background: #2D4A2D; color: white; border: none; padding: 12px 40px; border-radius: 25px; font-size: 1.2rem; cursor: pointer; display: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .btn-next:hover { background: #3e633e; }
 
-        /* Экран результатов */
-        .screen-result { 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            text-align: center; 
-            padding: 20px;
-        }
+        .screen-result { display: none; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; text-align: center; padding: 20px; }
         .result-score { font-size: 5rem; color: #2D4A2D; font-weight: 900; margin: 20px 0; }
         .result-msg { font-size: 1.5rem; color: #2D4A2D; margin-bottom: 30px; max-width: 600px; line-height: 1.4; }
 
-        @media (max-width: 600px) {
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+
+        @media (max-width: 968px) {
+            .quiz-container { flex-direction: column; }
+            .answer-panel { min-height: 300px; }
             .intro-title { font-size: 2rem; }
             .player-card { padding: 20px; }
             .option-btn { font-size: 1rem; padding: 12px; }
@@ -162,7 +67,6 @@
     <!-- ЭКРАН 1: ОБЛОЖКА -->
     <div class="screen-intro" id="screenIntro">
         <h1 class="intro-title">🎧 Угадай мелодию!</h1>
-        <!-- Картинка cover.png должна лежать рядом с этим файлом -->
         <img src="cover.png" alt="Music Quiz" class="intro-cover"> 
         <p style="color: #2D4A2D; margin-bottom: 30px; font-size: 1.2rem; font-weight: bold;">Слушай отрывок и выбирай правильный ответ!</p>
         <button class="btn-start" onclick="startQuiz()">▶️ Начать квиз</button>
@@ -171,68 +75,61 @@
     <!-- ЭКРАН 2: ВОПРОСЫ -->
     <div class="screen-quiz" id="screenQuiz">
         <div class="quiz-header">
-            <h2>Вопрос <span id="qCurrent">1</span> из <span id="qTotal">5</span></h2>
+            <h2>Вопрос <span id="qCurrent">1</span> из <span id="qTotal">15</span></h2>
         </div>
         
-        <div class="player-card">
-            <!-- Кнопка плеера -->
-            <button class="audio-btn" id="playBtn" onclick="toggleAudio()">▶</button>
-            <div class="question-text">Какая песня играет?</div>
+        <div class="quiz-container">
+            <div class="player-card">
+                <button class="audio-btn" id="playBtn" onclick="toggleAudio()">▶</button>
+                <div class="question-text">Что звучит в этом отрывке?</div>
+                <div class="options-grid" id="optionsContainer"></div>
+                <button class="btn-next" id="btnNext" onclick="nextQuestion()">Дальше ➡</button>
+            </div>
             
-            <div class="options-grid" id="optionsContainer">
-                <!-- Кнопки ответов генерируются скриптом -->
+            <div class="answer-panel" id="answerPanel">
+                <div class="answer-placeholder">
+                    <div style="font-size: 4rem; margin-bottom: 20px;"></div>
+                    <div>Здесь появится картинка-ответ!</div>
+                </div>
             </div>
         </div>
-        
-        <button class="btn-next" id="btnNext" onclick="nextQuestion()">Дальше ➡</button>
     </div>
 
     <!-- ЭКРАН 3: ФИНАЛ -->
     <div class="screen-result" id="screenResult">
         <h1 style="font-size: 3rem; color: #2D4A2D;">🎉 Квиз завершен!</h1>
-        <div class="result-score"><span id="finalScore">0</span> / <span id="totalScore">5</span></div>
+        <div class="result-score"><span id="finalScore">0</span> / <span id="totalScore">15</span></div>
         <p id="finalMessage" class="result-msg"></p>
-        <button class="btn-start" onclick="location.reload()">🔄 Сыграть ещё раз</button>
+        <button class="btn-start" onclick="location.reload()"> Сыграть ещё раз</button>
     </div>
 
     <!-- СКРИПТ ЛОГИКИ -->
     <script>
-        // === НАСТРОЙКИ ВОПРОСОВ ===
-        // Здесь вы связываете файлы 1.mp3, 2.mp3 с вариантами ответов.
-        // correct: 0 — это первый вариант, 1 — второй, 2 — третий.
+        // === БАЗА ДАННЫХ ВОПРОСОВ (ВСЕ 15 ФАЙЛОВ) ===
+        // Я заполнил это текстами из песни "Сидим с бобром", так как картинки соответствуют ей.
+        // correct: 0 - первый вариант, 1 - второй, 2 - третий
         
         const quizData = [
-            {
-                audioFile: '1.mp3', 
-                correct: 0, 
-                options: ['Название песни 1 (Правильное)', 'Неправильный вариант А', 'Неправильный вариант Б']
-            },
-            {
-                audioFile: '2.mp3',
-                correct: 1,
-                options: ['Неправильный вариант', 'Название песни 2 (Правильное)', 'Неправильный вариант']
-            },
-            {
-                audioFile: '3.mp3',
-                correct: 2,
-                options: ['Неправильный вариант', 'Неправильный вариант', 'Название песни 3 (Правильное)']
-            },
-            {
-                audioFile: '4.mp3',
-                correct: 0,
-                options: ['Название песни 4 (Правильное)', 'Неправильный вариант', 'Неправильный вариант']
-            },
-            {
-                audioFile: '5.mp3',
-                correct: 1,
-                options: ['Неправильный вариант', 'Название песни 5 (Правильное)', 'Неправильный вариант']
-            }
-            // Можно добавить еще блоки {...}, используя 6.mp3, 7.mp3 и т.д.
+            { audioFile: '1.mp3', image: 'q01-table.png', correct: 0, options: ['Сидим с бобром за столом', 'Стоим с бобром у реки', 'Лежим с бобром на пне'] },
+            { audioFile: '2.mp3', image: 'q02-log.png', correct: 1, options: ['Готовим суп из коры', 'Готовим вместе полено', 'Жарим шишки на костре'] },
+            { audioFile: '3.mp3', image: 'q03-conversation.png', correct: 2, options: ['Обсуждаем курс доллара', 'Молчим в тишине', 'Говорим о том, что наболело'] },
+            { audioFile: '4.mp3', image: 'q04-dam.png', correct: 0, options: ['Зачем же между нами плотина?', 'Зачем нам эта квартира?', 'Куда течет эта река?'] },
+            { audioFile: '5.mp3', image: 'q05-cliff.png', correct: 1, options: ['Высокий забор', 'Между нами обрыв', 'Глубокая яма'] },
+            { audioFile: '6.mp3', image: 'q06-kind.png', correct: 0, options: ['Бобры такие добрые', 'Бобры такие злые', 'Бобры умеют летать'] },
+            { audioFile: '7.mp3', image: 'q07-singing.png', correct: 1, options: ['Читаем стихи Пушкина', 'Поём с бобром хиты Алсу', 'Смотрим новости по ТВ'] },
+            { audioFile: '8.mp3', image: 'q08-hug.png', correct: 2, options: ['Мне так грустно и тоскливо', 'Хочется спать', 'Мне так офигенно'] },
+            { audioFile: '9.mp3', image: 'q09-drinks.png', correct: 0, options: ['Текила и ром', 'Чай с малиной', 'Простая вода'] },
+            { audioFile: '10.mp3', image: 'q10-music.png', correct: 1, options: ['Тяжелый рок', 'Мемный поп-хит', 'Классическая симфония'] },
+            { audioFile: '11.mp3', image: 'q11-building.png', correct: 2, options: ['Строят небоскребы', 'Пишут код на Python', 'Строят плотины и хатки'] },
+            { audioFile: '12.mp3', image: 'q12-portrait.png', correct: 0, options: ['Бобер', 'Выдра', 'Капибара'] },
+            { audioFile: '13.mp3', image: 'q13-mortgage.png', correct: 1, options: ['Оформляет ипотеку', 'Не оформляет ипотеку', 'Покупает дачу'] },
+            { audioFile: '14.mp3', image: 'q14-trust.png', correct: 2, options: ['Не верь, не бойся', 'Дай в долг до пятницы', 'Скажи мне честно, бобер'] },
+            { audioFile: '15.mp3', image: 'q15-cinema.png', correct: 0, options: ['Дружба с бобром — это офигенно', 'Бобры — опасные хищники', 'Нужно идти строить плотину'] }
         ];
 
         let currentQ = 0;
         let score = 0;
-        let currentAudio = new Audio(); // Создаем объект аудио
+        let currentAudio = new Audio(); 
 
         function startQuiz() {
             document.getElementById('screenIntro').style.display = 'none';
@@ -248,11 +145,16 @@
             document.getElementById('btnNext').style.display = 'none';
             document.getElementById('playBtn').innerText = '▶';
             
-            // Загружаем нужный файл
+            // Сброс панели ответов
+            document.getElementById('answerPanel').innerHTML = `
+                <div class="answer-placeholder">
+                    <div style="font-size: 4rem; margin-bottom: 20px;">🌲</div>
+                    <div>Здесь появится картинка-ответ!</div>
+                </div>`;
+            
             currentAudio.src = data.audioFile;
             currentAudio.load();
 
-            // Генерация кнопок
             const container = document.getElementById('optionsContainer');
             container.innerHTML = '';
             data.options.forEach((opt, index) => {
@@ -268,7 +170,7 @@
             const btn = document.getElementById('playBtn');
             if (currentAudio.paused) {
                 currentAudio.play().catch(e => console.log("Ошибка воспроизведения:", e));
-                btn.innerText = '';
+                btn.innerText = '⏸';
             } else {
                 currentAudio.pause();
                 btn.innerText = '▶';
@@ -278,23 +180,21 @@
         function checkAnswer(selectedIndex, btnElement) {
             const data = quizData[currentQ];
             const buttons = document.querySelectorAll('.option-btn');
-            
-            // Блокируем все кнопки
             buttons.forEach(b => b.disabled = true);
-            
-            // Останавливаем музыку
             currentAudio.pause();
             document.getElementById('playBtn').innerText = '▶';
 
             if (selectedIndex === data.correct) {
                 btnElement.classList.add('correct');
                 score++;
+                // Показываем картинку при правильном ответе
+                document.getElementById('answerPanel').innerHTML = `<img src="${data.image}" alt="Ответ" class="answer-image" onerror="this.outerHTML='<div style=\'color:#8B5A2B;font-weight:bold;text-align:center;\'>🖼️ Картинка не загрузилась: ${data.image}</div>'">`;
             } else {
                 btnElement.classList.add('wrong');
-                // Подсвечиваем правильный ответ
                 buttons[data.correct].classList.add('correct');
+                // При неправильном показываем эмодзи
+                document.getElementById('answerPanel').innerHTML = `<div style="font-size: 6rem; animation: fadeIn 0.5s;">😞</div>`;
             }
-            
             document.getElementById('btnNext').style.display = 'block';
         }
 
@@ -315,10 +215,10 @@
             const msg = document.getElementById('finalMessage');
             const percentage = (score / quizData.length) * 100;
             
-            if(percentage === 100) msg.innerText = " Идеально! Ты настоящий музыкальный гений!";
-            else if(percentage >= 80) msg.innerText = "🎹 Отличный слух! Почти без ошибок!";
+            if(percentage === 100) msg.innerText = "🎸 Идеально! Ты настоящий бобровед!";
+            else if(percentage >= 80) msg.innerText = " Отлично! Бобер тобой гордится!";
             else if(percentage >= 50) msg.innerText = "🎻 Неплохо, но можно лучше!";
-            else msg.innerText = "🥁 Попробуй еще раз, у тебя обязательно получится!";
+            else msg.innerText = "🥁 Попробуй еще раз, послушай песню внимательнее!";
         }
     </script>
 </body>
